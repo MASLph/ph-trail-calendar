@@ -766,6 +766,41 @@ body {
 }
 .ed-reg-btn:hover { background: #CC0000; }
 
+/* ── RACE SCHEDULE ── */
+.ed-schedule {
+  margin-bottom: 14px;
+}
+.ed-schedule-lbl {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 7px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #002FA7;
+  margin-bottom: 6px;
+  line-height: 1;
+}
+.ed-schedule-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.ed-schedule-dist {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  color: #CC0000;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+.ed-schedule-date {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 11px;
+  color: #555;
+  letter-spacing: 0.1px;
+}
+
 /* ── SECTION DIVIDER ── */
 .ed-divider {
   border: none;
@@ -1305,12 +1340,23 @@ async function fetchSheetData() {
         if (dist && gain) elevation[dist] = gain;
       });
 
+      // Schedule: pipe-separated "DIST:Date Day" pairs e.g. "50K:Jul 25 Sat|12K,25K:Jul 26 Sun"
+      const schedule = [];
+      (row['Schedule'] || '').split('|').forEach(pair => {
+        const colonIdx = pair.indexOf(':');
+        if (colonIdx === -1) return;
+        const dist = pair.slice(0, colonIdx).trim();
+        const date = pair.slice(colonIdx + 1).trim();
+        if (dist && date) schedule.push({ dist, date });
+      });
+
       EVENT_DETAILS[name] = {
         location:  (row['Location']  || '').trim(),
         distances,
         regLink:   (row['Reg Link']  || '').trim(),
         organizer: (row['Organizer'] || '').trim(),
         elevation,
+        schedule,
       };
     });
 
@@ -1694,6 +1740,18 @@ function openEventDetail(eventName, dk) {
   if (det && det.distances && det.distances.length) {
     const pills = det.distances.map(d => `<span class="ed-dist-pill">${d}</span>`).join('');
     html += `<div class="ed-distances">${pills}</div>`;
+  }
+
+  if (det && det.schedule && det.schedule.length) {
+    html += `<div class="ed-schedule">`;
+    html += `<div class="ed-schedule-lbl">Race Schedule</div>`;
+    det.schedule.forEach(s => {
+      html += `<div class="ed-schedule-row">
+        <span class="ed-schedule-dist">${s.dist}</span>
+        <span class="ed-schedule-date">${s.date}</span>
+      </div>`;
+    });
+    html += `</div>`;
   }
 
   if (det && det.regLink) {
