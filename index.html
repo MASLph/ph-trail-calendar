@@ -1190,7 +1190,7 @@ body {
 
   <!-- UPDATE BANNER — replace href with your actual Google Form URL -->
   <a class="update-banner"
-     href="https://forms.gle/example"
+     href="https://docs.google.com/forms/d/e/1FAIpQLSfhpuMI4T_9rXTtIwcS--tUYmDQgR8WwSObjJIxQ4rooj1XRg/viewform?usp=header"
      target="_blank"
      rel="noopener noreferrer">
     <span class="update-banner-text">Help improve this calendar. Send updates or feedback.</span>
@@ -1250,8 +1250,7 @@ const PH_HOLIDAYS = {
 };
 
 // ── GOOGLE SHEET CSV URLS ─────────────────────────────────
-const SHEET_EVENTS_URL  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRgLX2R0c_LekofFvWcGKaoJvs6kdJQquTQ43-ZvWG6WoazU1ZBnF9SBPbVvDHc1dKD72xVDDkwfdhw/pub?gid=1550638156&single=true&output=csv';
-const SHEET_DETAILS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRgLX2R0c_LekofFvWcGKaoJvs6kdJQquTQ43-ZvWG6WoazU1ZBnF9SBPbVvDHc1dKD72xVDDkwfdhw/pub?gid=526979681&single=true&output=csv';
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRgLX2R0c_LekofFvWcGKaoJvs6kdJQquTQ43-ZvWG6WoazU1ZBnF9SBPbVvDHc1dKD72xVDDkwfdhw/pub?gid=1550638156&single=true&output=csv';
 
 // These are populated by fetchSheetData() before first render
 let TRAIL_EVENTS  = {};
@@ -1281,34 +1280,25 @@ function parseCSV(text) {
 // ── FETCH & BUILD DATA ────────────────────────────────────
 async function fetchSheetData() {
   try {
-    const [evRes, detRes] = await Promise.all([
-      fetch(SHEET_EVENTS_URL),
-      fetch(SHEET_DETAILS_URL)
-    ]);
-    const [evCSV, detCSV] = await Promise.all([evRes.text(), detRes.text()]);
+    const res = await fetch(SHEET_URL);
+    const csv = await res.text();
+    const rows = parseCSV(csv);
 
-    // Build TRAIL_EVENTS: { 'YYYY-MM-DD': ['Event Name', ...] }
-    const evRows = parseCSV(evCSV);
-    TRAIL_EVENTS = {};
-    evRows.forEach(row => {
+    TRAIL_EVENTS  = {};
+    EVENT_DETAILS = {};
+
+    rows.forEach(row => {
       const date = (row['Date'] || '').trim();
       const name = (row['Event Name'] || '').trim();
       if (!date || !name) return;
+
+      // Build TRAIL_EVENTS: { 'YYYY-MM-DD': ['Event Name', ...] }
       if (!TRAIL_EVENTS[date]) TRAIL_EVENTS[date] = [];
       TRAIL_EVENTS[date].push(name);
-    });
 
-    // Build EVENT_DETAILS: { 'Event Name': { location, distances, regLink, elevation, organizer } }
-    const detRows = parseCSV(detCSV);
-    EVENT_DETAILS = {};
-    detRows.forEach(row => {
-      const name = (row['Event Name'] || '').trim();
-      if (!name) return;
-
-      // Distances: comma-separated string → array
+      // Build EVENT_DETAILS: { 'Event Name': { location, distances, regLink, elevation, organizer } }
       const distances = (row['Distances'] || '').split(',').map(d => d.trim()).filter(Boolean);
 
-      // Elevation: pipe-separated "DIST:+Xm" pairs → object
       const elevation = {};
       (row['Elevation'] || '').split('|').forEach(pair => {
         const [dist, gain] = pair.split(':').map(s => s.trim());
