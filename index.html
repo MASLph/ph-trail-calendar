@@ -1461,7 +1461,7 @@ function renderCenter(y, m, today) {
     allCards.forEach(({ k, name, dateLabel }) => {
       const det      = EVENT_DETAILS[name];
       const safeName = name.replace(/'/g, "\'").replace(/"/g, '&quot;');
-      const locShort = det ? det.location.split(',').pop().trim() : '';
+      const parts = det ? det.location.split(',') : []; const locShort = parts.length >= 2 ? parts[parts.length - 2].trim() : (parts[0] ? parts[0].trim() : '');
       const distStr  = det && det.distances ? det.distances.join(' / ') : '';
       const metaStr  = [locShort, distStr].filter(Boolean).join(' • ');
 
