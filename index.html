@@ -1350,15 +1350,33 @@ async function fetchSheetData() {
         if (dist && gain) elevation[dist] = gain;
       });
 
-      // Schedule: pipe-separated "DIST:Date Day" pairs e.g. "50K:Jul 25 Sat|12K,25K:Jul 26 Sun"
+      // Schedule: built from Day 1 Distances / Day 2 Distances columns.
+      // Day 1 date = the event's Date value (YYYY-MM-DD).
+      // Day 2 date = Day 1 date + 1 calendar day (always derived, never hardcoded).
       const schedule = [];
-      (row['Schedule'] || '').split('|').forEach(pair => {
-        const colonIdx = pair.indexOf(':');
-        if (colonIdx === -1) return;
-        const dist = pair.slice(0, colonIdx).trim();
-        const date = pair.slice(colonIdx + 1).trim();
-        if (dist && date) schedule.push({ dist, date });
-      });
+      const day1Dist = (row['Day 1 Distances'] || '').trim();
+      const day2Dist = (row['Day 2 Distances'] || '').trim();
+
+      // Helper: format a YYYY-MM-DD string as "Mon D" (e.g. "Jun 27")
+      function fmtScheduleDate(isoDate) {
+        const [sy, sm, sd] = isoDate.split('-').map(Number);
+        const dt = new Date(sy, sm - 1, sd);
+        const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        return `${MON[dt.getMonth()]} ${sd} ${DOW[dt.getDay()]}`;
+      }
+
+      if (day1Dist) {
+        schedule.push({ dist: day1Dist, date: fmtScheduleDate(date) });
+      }
+
+      if (day2Dist) {
+        // Compute Day 2 = Day 1 + 1 calendar day
+        const [d1y, d1m, d1d] = date.split('-').map(Number);
+        const day2Date = new Date(d1y, d1m - 1, d1d + 1);
+        const day2Key = `${day2Date.getFullYear()}-${pad(day2Date.getMonth()+1)}-${pad(day2Date.getDate())}`;
+        schedule.push({ dist: day2Dist, date: fmtScheduleDate(day2Key) });
+      }
 
       EVENT_DETAILS[name] = {
         location:  (row['Location']  || '').trim(),
