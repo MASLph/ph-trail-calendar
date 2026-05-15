@@ -738,6 +738,24 @@ body {
   letter-spacing: 0.2px;
   line-height: 1.4;
   margin-top: 1px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.ed-island-badge {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 7.5px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #6680cc;
+  border: 1px solid #b3c0e8;
+  border-radius: 20px;
+  padding: 1px 7px 1px 6px;
+  line-height: 1.6;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 .ed-distances {
   display: flex;
@@ -1378,11 +1396,16 @@ async function fetchSheetData() {
         schedule.push({ dist: day2Dist, date: fmtScheduleDate(day2Key) });
       }
 
+      // Strip ", Philippines" (any casing/spacing) from end of location for display
+      const rawLocation = (row['Location'] || '').trim();
+      const displayLocation = rawLocation.replace(/,?\s*philippines\s*$/i, '').trim();
+
       EVENT_DETAILS[name] = {
-        location:  (row['Location']  || '').trim(),
+        location:    displayLocation,
         distances,
-        regLink:   (row['Reg Link']  || '').trim(),
-        organizer: (row['Organizer'] || '').trim(),
+        regLink:     (row['Reg Link']    || '').trim(),
+        organizer:   (row['Organizer']   || '').trim(),
+        islandGroup: (row['Island Group'] || '').trim(),
         elevation,
         schedule,
       };
@@ -1761,7 +1784,10 @@ function openEventDetail(eventName, dk) {
   html += `<div class="ed-date-loc">
     <div class="ed-date-line">${fullDate}</div>`;
   if (det && det.location) {
-    html += `<div class="ed-loc-line">${det.location}</div>`;
+    const islandBadge = (det.islandGroup)
+      ? ` <span class="ed-island-badge">${det.islandGroup}</span>`
+      : '';
+    html += `<div class="ed-loc-line">${det.location}${islandBadge}</div>`;
   }
   html += `</div>`;
 
