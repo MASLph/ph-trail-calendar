@@ -2151,7 +2151,9 @@ function renderFilteredStrip() {
       const safeName = name.replace(/'/g, "\'").replace(/"/g, '&quot;');
       let metaStr;
       if (currentMode === 'hikes') {
-        metaStr = [det ? det.location : '', det ? det.difficulty : ''].filter(Boolean).join(' · ');
+        const hikeParts = det ? det.location.split(',') : [];
+        const hikeLoc   = hikeParts.length >= 2 ? hikeParts[1].trim() : (hikeParts[0] ? hikeParts[0].trim() : '');
+        metaStr = [hikeLoc, det ? det.difficulty : ''].filter(Boolean).join(' · ');
       } else {
         const parts    = det ? det.location.split(',') : [];
         const locShort = parts.length >= 2 ? parts[1].trim() : (parts[0] ? parts[0].trim() : '');
@@ -2322,8 +2324,9 @@ function renderCenter(y, m, today) {
       const safeName = name.replace(/'/g, "\'").replace(/"/g, '&quot;');
       let metaStr;
       if (currentMode === 'hikes') {
-        const loc  = det ? det.location  : '';
-        const diff = det ? det.difficulty : '';
+        const parts = det ? det.location.split(',') : [];
+        const loc   = parts.length >= 2 ? parts[1].trim() : (parts[0] ? parts[0].trim() : '');
+        const diff  = det ? det.difficulty : '';
         metaStr = [loc, diff].filter(Boolean).join(' · ');
       } else {
         const parts   = det ? det.location.split(',') : [];
