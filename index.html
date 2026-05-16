@@ -3108,13 +3108,37 @@ async function switchMode(mode) {
   // No-op if already on this mode (prevents re-fetch flicker)
   if (mode === currentMode) return;
 
-  // ── Clear search state on every tab switch ─────────────
+  // ── Clear search + filters on every tab switch ──────────
+  // Mirrors clearSearch() but skips renderFilteredStrip()
+  // since switchMode calls render() itself at the end.
   sfState.query  = '';
   sfState.island = 'all';
   sfState.status = 'all';
+
   const sfInput = document.getElementById('sf-input');
   if (sfInput) sfInput.value = '';
-  document.querySelectorAll('.sf-chip').forEach(c => c.classList.remove('is-active'));
+
+  // Reset chips: deactivate all, re-activate the "all" chips
+  document.querySelectorAll('.sf-chip').forEach(c => {
+    c.classList.toggle('is-active', c.dataset.value === 'all');
+  });
+
+  // Hide the CLEAR button
+  const sfClearBtn = document.getElementById('sf-clear-btn');
+  if (sfClearBtn) sfClearBtn.style.display = 'none';
+
+  // Collapse the search panel if it is open
+  const sfPanel   = document.getElementById('sf-panel');
+  const sfToggle  = document.getElementById('sf-toggle-btn');
+  if (sfPanel && sfPanel.classList.contains('is-open')) {
+    sfPanel.classList.remove('is-open');
+    sfPanel.setAttribute('aria-hidden', 'true');
+    if (sfToggle) {
+      sfToggle.classList.remove('is-open');
+      sfToggle.setAttribute('aria-expanded', 'false');
+    }
+  }
+
   updateResultsLabel('');
 
   const html     = document.documentElement;
