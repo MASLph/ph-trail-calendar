@@ -1271,9 +1271,33 @@ body {
   z-index: 50;
   flex-direction: column;
   pointer-events: all;
+  opacity: 0;
+  transition: opacity 0.18s ease;
 }
 .cal-loading-overlay.is-visible {
   display: flex;
+}
+.cal-loading-overlay.is-opaque {
+  opacity: 1;
+}
+
+/* ── Inline progress bar — top of overlay, browser-style ── */
+.skel-progress-track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(0, 0, 0, 0.07);
+  z-index: 1;
+  overflow: hidden;
+}
+.skel-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--primary);
+  transition: width 0.3s ease;
+  border-radius: 0 2px 2px 0;
 }
 
 /* ── Skeleton grid — mirrors the real 7-col calendar grid ── */
@@ -1704,8 +1728,12 @@ body {
     <!-- GRID -->
     <div class="cal-grid" id="cal-grid"></div>
 
-    <!-- LOADING OVERLAY — skeleton shown while hike data fetches -->
+    <!-- LOADING OVERLAY — skeleton shown while race/hike data fetches -->
     <div class="cal-loading-overlay" id="cal-loading-overlay">
+      <!-- Progress bar — top of overlay, browser-style -->
+      <div class="skel-progress-track">
+        <div class="skel-progress-fill" id="skel-progress-fill"></div>
+      </div>
       <!-- Skeleton grid: 5 rows × 7 cols = 35 cells -->
       <div class="skel-grid" id="skel-grid">
         <!-- Row 1: 1 blank + 6 days -->
@@ -1751,7 +1779,7 @@ body {
       </div>
       <div class="skel-footer">
         <div class="skel-spinner"></div>
-        <div class="skel-label">Loading Hikes…</div>
+        <div class="skel-label" id="skel-label">Loading…</div>
       </div>
     </div>
 
@@ -1957,7 +1985,78 @@ function parseHikeData(csv) {
 }
 
 // ── FETCH & BUILD DATA ────────────────────────────────────
+// ── CALENDAR LOADING OVERLAY UTILITIES ───────────────────
+// Shared by both the initial race fetch and the hike tab fetch.
+// Uses a RAF-driven simulated progress bar (same philosophy as the
+// full-page splash) — eases to ~88% on its own, snaps to 100% on hide.
+
+let _calLoadingRaf = null;
+let _calLoadingProgress = 0;
+
+function calLoadingShow(label) {
+  const overlay  = document.getElementById('cal-loading-overlay');
+  const fill     = document.getElementById('skel-progress-fill');
+  const labelEl  = document.getElementById('skel-label');
+
+  if (!overlay) return;
+
+  // Reset progress
+  _calLoadingProgress = 0;
+  if (fill) {
+    fill.style.transition = 'none';
+    fill.style.width = '0%';
+  }
+  if (labelEl) labelEl.textContent = label || 'Loading…';
+
+  // Show overlay — use rAF to ensure display:flex is painted before opacity
+  overlay.classList.add('is-visible');
+  requestAnimationFrame(() => {
+    overlay.classList.add('is-opaque');
+  });
+
+  // Animate progress bar
+  cancelAnimationFrame(_calLoadingRaf);
+  function tick() {
+    _calLoadingProgress += (88 - _calLoadingProgress) * 0.045;
+    if (fill) fill.style.width = _calLoadingProgress + '%';
+    _calLoadingRaf = requestAnimationFrame(tick);
+  }
+  if (fill) fill.style.transition = 'width 0.3s ease';
+  _calLoadingRaf = requestAnimationFrame(tick);
+}
+
+function calLoadingHide() {
+  const overlay = document.getElementById('cal-loading-overlay');
+  const fill    = document.getElementById('skel-progress-fill');
+
+  cancelAnimationFrame(_calLoadingRaf);
+
+  // Snap bar to 100%
+  if (fill) {
+    fill.style.transition = 'width 0.18s ease';
+    fill.style.width = '100%';
+  }
+
+  // Fade out overlay after bar completes
+  setTimeout(() => {
+    if (overlay) overlay.classList.remove('is-opaque');
+    setTimeout(() => {
+      if (overlay) {
+        overlay.classList.remove('is-visible');
+        // Reset bar silently for next use
+        if (fill) {
+          fill.style.transition = 'none';
+          fill.style.width = '0%';
+        }
+      }
+    }, 200); // matches CSS transition duration
+  }, 180);
+}
+
 async function fetchSheetData() {
+  // ── Show skeleton overlay while race data loads ──────────
+  calLoadingShow('Loading Trail Races…');
+
   try {
     const res = await fetch(RACE_CSV_URL);
     const csv = await res.text();
@@ -2034,7 +2133,8 @@ async function fetchSheetData() {
   // Cache the loaded race data for tab switching
   raceData = { events: TRAIL_EVENTS, details: EVENT_DETAILS };
 
-  // Render calendar after data is loaded (or on failure, render empty)
+  // Hide overlay, then render
+  calLoadingHide();
   render();
   document.fonts.ready.then(updateStickyOffset);
 }
@@ -3053,9 +3153,7 @@ async function switchMode(mode) {
   // ── Fetch (if not yet cached) & swap globals ────────────
   if (mode === 'hikes') {
     if (!hikeData) {
-      // Show loading overlay instead of dimming the grid
-      const loadingOverlay = document.getElementById('cal-loading-overlay');
-      if (loadingOverlay) loadingOverlay.classList.add('is-visible');
+      calLoadingShow('Loading Hikes…');
       grid.style.pointerEvents = 'none';
       try {
         const res = await fetch(HIKE_CSV_URL);
@@ -3063,13 +3161,9 @@ async function switchMode(mode) {
         hikeData  = parseHikeData(csv);
       } catch (err) {
         console.error('Failed to load hike data:', err);
-        if (loadingOverlay) loadingOverlay.classList.remove('is-visible');
-        grid.style.pointerEvents = '';
-        // Reset to empty data so render() still draws the full calendar
-        // (date numbers remain visible; the event strip will show the error)
         hikeData = { events: {}, details: {}, _loadError: true };
       }
-      if (loadingOverlay) loadingOverlay.classList.remove('is-visible');
+      calLoadingHide();
       grid.style.pointerEvents = '';
     }
     TRAIL_EVENTS  = hikeData.events;
