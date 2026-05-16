@@ -1209,41 +1209,98 @@ body {
   50%       { transform: translateX(-50%) translateY(7px); }
 }
 
-/* ── LOADING OVERLAY ── */
+/* ── SKELETON LOADING OVERLAY ── */
+@keyframes cal-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes skel-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.45; }
+}
+
 .cal-loading-overlay {
   display: none;
   position: absolute;
   inset: 0;
-  background: rgba(255, 255, 255, 0.82);
+  background: white;
   z-index: 50;
-  align-items: center;
-  justify-content: center;
   flex-direction: column;
-  gap: 10px;
-  pointer-events: none;
+  pointer-events: all;
 }
 .cal-loading-overlay.is-visible {
   display: flex;
 }
-.cal-loading-spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid rgba(0, 47, 167, 0.15);
+
+/* ── Skeleton grid — mirrors the real 7-col calendar grid ── */
+.skel-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 4px 2px 6px;
+  margin: 0 6px 6px;
+  gap: 2px;
+  background: var(--primary);
+  flex: 1;
+}
+.skel-cell {
+  background: white;
+  border-radius: 5px;
+  padding: 6px 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  animation: skel-pulse 1.4s ease-in-out infinite;
+}
+/* Stagger the pulse so cells ripple, not all flash together */
+.skel-cell:nth-child(7n+2) { animation-delay: 0.08s; }
+.skel-cell:nth-child(7n+3) { animation-delay: 0.16s; }
+.skel-cell:nth-child(7n+4) { animation-delay: 0.24s; }
+.skel-cell:nth-child(7n+5) { animation-delay: 0.32s; }
+.skel-cell:nth-child(7n+6) { animation-delay: 0.40s; }
+.skel-cell:nth-child(7n+0) { animation-delay: 0.48s; }
+.skel-cell.skel-blank { background: white; pointer-events: none; }
+
+/* Date-number shimmer block */
+.skel-num {
+  width: 36px;
+  height: 40px;
+  background: #e8edf8;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+/* Event-pill shimmer block */
+.skel-pill {
+  width: 90%;
+  height: 14px;
+  background: #f0d0d5;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* ── Spinner + label — centred below the grid, inside the bottom strip area ── */
+.skel-footer {
+  padding: 16px 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-top: 3px solid var(--primary);
+}
+.skel-spinner {
+  width: 22px;
+  height: 22px;
+  border: 2.5px solid rgba(0, 47, 167, 0.15);
   border-top-color: var(--primary);
   border-radius: 50%;
-  animation: cal-spin 0.7s linear infinite;
+  animation: cal-spin 0.75s linear infinite;
+  flex-shrink: 0;
 }
-.cal-loading-label {
+.skel-label {
   font-family: 'Oswald', sans-serif;
   font-weight: 700;
   font-size: 11px;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--primary);
-  opacity: 0.7;
-}
-@keyframes cal-spin {
-  to { transform: rotate(360deg); }
+  opacity: 0.6;
 }
 
 @media (min-width: 601px) {
@@ -1417,6 +1474,21 @@ body {
   .sf-panel { padding: 10px 12px 12px; gap: 8px; }
   .sf-input { font-size: 11px; padding: 8px 10px; }
   .sf-chip { font-size: 9px; padding: 4px 9px; }
+
+  /* Skeleton grid — match mobile cal-grid sizing */
+  .skel-grid {
+    flex: 1;
+    min-height: 0;
+    margin: 0 4px;
+    padding: 2px;
+    gap: 2px;
+    align-content: stretch;
+    grid-auto-rows: 1fr;
+    margin-bottom: 0;
+  }
+  .skel-cell { border-radius: 3px; padding: 3px 3px; gap: 3px; }
+  .skel-num  { width: 28px; height: 26px; }
+  .skel-pill { height: 10px; }
 }
 
 /* ── BOTTOM NAV BAR ── */
@@ -1574,10 +1646,55 @@ body {
     <!-- GRID -->
     <div class="cal-grid" id="cal-grid"></div>
 
-    <!-- LOADING OVERLAY — shown while hike data fetches -->
+    <!-- LOADING OVERLAY — skeleton shown while hike data fetches -->
     <div class="cal-loading-overlay" id="cal-loading-overlay">
-      <div class="cal-loading-spinner"></div>
-      <div class="cal-loading-label">Loading…</div>
+      <!-- Skeleton grid: 5 rows × 7 cols = 35 cells -->
+      <div class="skel-grid" id="skel-grid">
+        <!-- Row 1: 1 blank + 6 days -->
+        <div class="skel-cell skel-blank"></div>
+        <div class="skel-cell"><div class="skel-num"></div><div class="skel-pill"></div></div>
+        <div class="skel-cell"><div class="skel-num"></div></div>
+        <div class="skel-cell"><div class="skel-num"></div><div class="skel-pill"></div></div>
+        <div class="skel-cell"><div class="skel-num"></div></div>
+        <div class="skel-cell"><div class="skel-num"></div></div>
+        <div class="skel-cell"><div class="skel-num"></div><div class="skel-pill"></div></div>
+        <!-- Row 2 -->
+        <div class="skel-cell"><div class="skel-num"></div></div>
+        <div class="skel-cell"><div class="skel-num"></div><div class="skel-pill"></div></div>
+        <div class="skel-cell"><div class="skel-num"></div></div>
+        <div class="skel-cell"><div class="skel-num"></div></div>
+        <div class="skel-cell"><div class="skel-num"></div><div class="skel-pill"></div></div>
+        <div class="skel-cell"><div class="skel-num"></div></div>
+        <div class="skel-cell"><div class="skel-num"></div></div>
+        <!-- Row 3 -->
+        <div class="skel-cell"><div class="skel-num"></div><div class="skel-pill"></div></div>
+        <div class="skel-cell"><div class="skel-num"></div></div>
+        <div class="skel-cell"><div class="skel-num"></div></div>
+        <div class="skel-cell"><div class="skel-num"></div><div class="skel-pill"></div></div>
+        <div class="skel-cell"><div class="skel-num"></div></div>
+        <div class="skel-cell"><div class="skel-num"></div><div class="skel-pill"></div></div>
+        <div class="skel-cell"><div class="skel-num"></div></div>
+        <!-- Row 4 -->
+        <div class="skel-cell"><div class="skel-num"></div></div>
+        <div class="skel-cell"><div class="skel-num"></div></div>
+        <div class="skel-cell"><div class="skel-num"></div><div class="skel-pill"></div></div>
+        <div class="skel-cell"><div class="skel-num"></div></div>
+        <div class="skel-cell"><div class="skel-num"></div></div>
+        <div class="skel-cell"><div class="skel-num"></div><div class="skel-pill"></div></div>
+        <div class="skel-cell"><div class="skel-num"></div></div>
+        <!-- Row 5: 2 days + 5 blanks -->
+        <div class="skel-cell"><div class="skel-num"></div></div>
+        <div class="skel-cell"><div class="skel-num"></div><div class="skel-pill"></div></div>
+        <div class="skel-cell skel-blank"></div>
+        <div class="skel-cell skel-blank"></div>
+        <div class="skel-cell skel-blank"></div>
+        <div class="skel-cell skel-blank"></div>
+        <div class="skel-cell skel-blank"></div>
+      </div>
+      <div class="skel-footer">
+        <div class="skel-spinner"></div>
+        <div class="skel-label">Loading Hikes…</div>
+      </div>
     </div>
 
   </div><!-- /.above-fold -->
