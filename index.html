@@ -708,6 +708,51 @@ body {
   flex-shrink: 0;
 }
 
+/* ── SPLASH SCREEN ── */
+#splash {
+  position: fixed;
+  inset: 0;
+  background: #002FA7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 1;
+  transition: opacity 0.4s ease;
+}
+#splash.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+#splash.hidden {
+  display: none;
+}
+.splash-logo {
+  width: 88px;
+  height: auto;
+  fill: white;
+  animation: splash-pulse 2.2s ease-in-out infinite;
+}
+@keyframes splash-pulse {
+  0%, 100% { opacity: 1;   transform: scale(1);    }
+  50%       { opacity: 0.6; transform: scale(0.91); }
+}
+.splash-bar-track {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.15);
+}
+.splash-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: white;
+  transition: width 0.35s ease;
+}
+
 /* ── FLOATING CARD + OVERLAY ── */
 .fc-overlay {
   display: none;
@@ -1590,6 +1635,19 @@ body {
 </style>
 </head>
 <body>
+
+<!-- ── SPLASH SCREEN (first-visit only) ── -->
+<div id="splash" role="status" aria-label="Loading Philippine Trail Race Calendar">
+  <svg class="splash-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 674.82 556.57" aria-hidden="true">
+    <polygon points="395.65 0 318.46 77.19 259.58 18.15 0 277.72 279.06 556.57 356.24 479.39 415.12 538.43 674.82 278.73 395.65 0"/>
+    <polygon style="fill:#002FA7" points="395.65 104.13 516.08 224.56 591.66 224.56 395.65 28.56 337.05 87.16 374.83 124.94 395.65 104.13"/>
+    <polygon style="fill:#002FA7" points="279.06 452.44 158.62 332.02 83.04 332.02 279.06 528.01 337.65 469.42 299.87 431.63 279.06 452.44"/>
+    <polygon style="fill:#002FA7" points="619.63 251.81 619.1 251.28 130.54 251.32 259.32 122.54 361.34 224.56 436.92 224.56 259.56 46.73 28.35 277.95 55.6 305.29 544.16 305.25 415.38 434.03 313.37 332.02 237.78 332.02 415.14 509.84 646.36 278.62 619.63 251.81"/>
+  </svg>
+  <div class="splash-bar-track">
+    <div class="splash-bar-fill" id="splash-bar"></div>
+  </div>
+</div>
 
 <!-- Embedded MASL logo -->
 <svg id="masl-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 674.82 556.57" style="display:none">
@@ -2950,6 +3008,15 @@ async function switchMode(mode) {
   // No-op if already on this mode (prevents re-fetch flicker)
   if (mode === currentMode) return;
 
+  // ── Clear search state on every tab switch ─────────────
+  sfState.query  = '';
+  sfState.island = 'all';
+  sfState.status = 'all';
+  const sfInput = document.getElementById('sf-input');
+  if (sfInput) sfInput.value = '';
+  document.querySelectorAll('.sf-chip').forEach(c => c.classList.remove('is-active'));
+  updateResultsLabel('');
+
   const html     = document.documentElement;
   const tabRuns  = document.getElementById('tabRuns');
   const tabHikes = document.getElementById('tabHikes');
@@ -3018,6 +3085,53 @@ async function switchMode(mode) {
   // ── Re-render ───────────────────────────────────────────
   render();
 }
+</script>
+
+<script>
+// ── SPLASH SCREEN LOGIC ──────────────────────────────────
+(function () {
+  const splash  = document.getElementById('splash');
+  const bar     = document.getElementById('splash-bar');
+
+  // Skip entirely for returning visitors
+  if (localStorage.getItem('ptrc-splash-seen')) {
+    splash.classList.add('hidden');
+    return;
+  }
+
+  // Simulate natural-feeling progress: ease up to ~88%, then
+  // jump to 100% and fade out when the real load event fires.
+  let progress  = 0;
+  let rafId;
+
+  function advanceBar() {
+    // Slow down as it approaches 88% — never reaches it on its own
+    const remaining = 88 - progress;
+    progress += remaining * 0.04;
+    bar.style.width = progress + '%';
+    rafId = requestAnimationFrame(advanceBar);
+  }
+
+  advanceBar();
+
+  window.addEventListener('load', function () {
+    cancelAnimationFrame(rafId);
+
+    // Snap to 100%
+    bar.style.transition = 'width 0.2s ease';
+    bar.style.width = '100%';
+
+    // Short pause so the full bar is visible, then fade out
+    setTimeout(function () {
+      splash.classList.add('fade-out');
+
+      splash.addEventListener('transitionend', function () {
+        splash.classList.add('hidden');
+        localStorage.setItem('ptrc-splash-seen', '1');
+      }, { once: true });
+    }, 220);
+  });
+})();
 </script>
 </body>
 </html>
