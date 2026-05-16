@@ -2045,48 +2045,139 @@ function clearSearch() {
 }
 
 function renderFilteredStrip() {
-  render();
-
   const { query, island, status } = sfState;
   const hasFilters = query || island !== 'all' || status !== 'all';
 
   if (!hasFilters) {
+    // No active filters — normal month render
+    render();
     updateResultsLabel('');
     return;
   }
 
-  const cards = document.querySelectorAll('.race-card');
-  let visibleCount = 0;
+  // ── Search is active: rebuild strip from ALL events across all months ──
 
-  cards.forEach(card => {
-    const name       = (card.querySelector('.rc-name')?.textContent || '').toLowerCase();
-    const meta       = (card.querySelector('.rc-meta')?.textContent || '').toLowerCase();
-    const cardIsland = card.dataset.island || '';
-    const cardStatus = card.dataset.status || '';
+  // Re-draw the calendar grid for the current month (navigation stays intact)
+  const y = cur.getFullYear(), m = cur.getMonth();
+  document.getElementById('yr-l').textContent     = y;
+  document.getElementById('mon-name').textContent = MONTHS[m];
+  const firstDow    = new Date(y, m, 1).getDay();
+  const daysInMonth = new Date(y, m+1, 0).getDate();
+  const today       = new Date();
+  let cells = Array(firstDow).fill(null);
+  for (let d = 1; d <= daysInMonth; d++) cells.push(d);
+  while (cells.length % 7) cells.push(null);
+  const grid = document.getElementById('cal-grid');
+  grid.innerHTML = '';
+  cells.forEach((d, i) => {
+    const div = document.createElement('div');
+    div.className = 'day-cell';
+    if (d === null) { div.classList.add('blank'); grid.appendChild(div); return; }
+    const dow = i % 7, dk = key(y, m, d);
+    const isSun = dow === 0, isHol = !!PH_HOLIDAYS[dk], evArr = TRAIL_EVENTS[dk] || [];
+    const isToday = (y === today.getFullYear() && m === today.getMonth() && d === today.getDate());
+    if (isSun)   div.classList.add('is-sun');
+    if (isHol)   div.classList.add('is-holiday');
+    if (isToday) div.classList.add('is-today');
+    div.addEventListener('click', () => openCard(dk, d, m, y));
+    div.innerHTML += `<div class="date-num-wrap"><div class="date-num">${d}</div></div>`;
+    if (isHol) div.innerHTML += `<div class="holiday-lbl">${PH_HOLIDAYS[dk][0]}</div>`;
+    if (evArr.length > 0) {
+      div.innerHTML += `<div class="event-pill"><span class="pill-emoji">🏃 </span>${stripEmoji(evArr[0])}</div>`;
+      const mobileMax = Math.min(evArr.length, 4);
+      for (let pi = 1; pi < mobileMax; pi++) {
+        div.innerHTML += `<div class="event-pill pill-extra-mobile">${stripEmoji(evArr[pi])}</div>`;
+      }
+      if (evArr.length > 1) div.innerHTML += `<div class="more-badge more-badge-desktop">+${evArr.length - 1}</div>`;
+      if (evArr.length > 4) div.innerHTML += `<div class="more-badge more-badge-mobile">+${evArr.length - 4}</div>`;
+    }
+    grid.appendChild(div);
+  });
+  updateStickyOffset();
+  updateTodayBtn();
 
-    const matchesQuery  = !query  || name.includes(query) || meta.includes(query);
+  // Build flat list of ALL events across all months, sorted chronologically
+  const MONTH_ABBR = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const allCards = [];
+  Object.entries(TRAIL_EVENTS)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .forEach(([k, arr]) => {
+      const parts = k.split('-').map(Number);
+      const km = parts[1], kd = parts[2];
+      const dateLabel = `${MONTH_ABBR[km - 1]} ${kd}`;
+      arr.forEach(name => allCards.push({ k, name, dateLabel }));
+    });
+
+  // Filter against the full dataset
+  const matchedCards = allCards.filter(({ name }) => {
+    const det        = EVENT_DETAILS[name];
+    const cardIsland = det ? (det.islandGroup || '') : '';
+    const cardStatus = det ? (det.regStatus   || '') : '';
+    const metaStr    = det
+      ? (currentMode === 'hikes'
+          ? [det.location || '', det.difficulty || ''].join(' ')
+          : [det.location || '', (det.distances || []).join(' ')].join(' '))
+      : '';
+    const searchText = (name + ' ' + metaStr).toLowerCase();
+    const matchesQuery  = !query  || searchText.includes(query);
     const matchesIsland = island === 'all' || cardIsland.toLowerCase().includes(island.toLowerCase());
     const matchesStatus = status === 'all' || cardStatus.toLowerCase() === status.toLowerCase();
-
-    const visible = matchesQuery && matchesIsland && matchesStatus;
-    card.style.display = visible ? '' : 'none';
-    if (visible) visibleCount++;
+    return matchesQuery && matchesIsland && matchesStatus;
   });
 
-  document.querySelectorAll('.hol-row').forEach(row => {
-    const text      = (row.textContent || '').toLowerCase();
-    const rowIsland = row.dataset.island || '';
-    const rowStatus = row.dataset.status || '';
-    const matchesQuery  = !query  || text.includes(query);
-    const matchesIsland = island === 'all' || rowIsland.toLowerCase().includes(island.toLowerCase());
-    const matchesStatus = status === 'all' || rowStatus.toLowerCase() === status.toLowerCase();
-    row.style.display = (matchesQuery && matchesIsland && matchesStatus) ? '' : 'none';
-  });
+  // Rebuild the strip with global results
+  const el = document.getElementById('center-info');
+  const stripTitle = currentMode === 'hikes' ? 'ALL HIKES' : 'ALL TRAIL RACES';
 
-  if (visibleCount === 0) {
+  let h = `
+    <div class="ev-header">
+      <div class="ev-title">${stripTitle}</div>
+      ${matchedCards.length > 0 ? `
+      <div class="strip-nav" id="strip-nav">
+        <button class="strip-nav-btn" id="strip-prev" onclick="stripNav(-1)" aria-label="Previous" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <button class="strip-nav-btn" id="strip-next" onclick="stripNav(1)" aria-label="Next">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+      </div>` : ''}
+    </div>`;
+
+  if (matchedCards.length > 0) {
+    h += `<div class="race-strip-wrap at-start" id="race-strip-wrap"><div class="race-strip" id="race-strip">`;
+    matchedCards.forEach(({ k, name, dateLabel }) => {
+      const det      = EVENT_DETAILS[name];
+      const safeName = name.replace(/'/g, "\'").replace(/"/g, '&quot;');
+      let metaStr;
+      if (currentMode === 'hikes') {
+        metaStr = [det ? det.location : '', det ? det.difficulty : ''].filter(Boolean).join(' · ');
+      } else {
+        const parts    = det ? det.location.split(',') : [];
+        const locShort = parts.length >= 2 ? parts[1].trim() : (parts[0] ? parts[0].trim() : '');
+        const distStr  = det && det.distances ? det.distances.join(' / ') : '';
+        metaStr = [locShort, distStr].filter(Boolean).join(' • ');
+      }
+      const cardIsland = det ? (det.islandGroup || '') : '';
+      const cardStatus = det ? (det.regStatus   || '') : '';
+      h += `<div class="race-card" data-island="${cardIsland}" data-status="${cardStatus}" onclick="openEventDetailFromList('${safeName}','${k}',this)">
+              <div class="rc-date">${dateLabel}</div>
+              <div class="rc-div"></div>
+              <div class="rc-name">${name}</div>
+              ${metaStr ? `<div class="rc-meta">${metaStr}</div>` : ''}
+            </div>`;
+    });
+    h += `</div></div>`;
+  } else {
+    h += `<div class="race-strip-empty">No events match your search.</div>`;
+  }
+
+  el.innerHTML = h;
+  if (matchedCards.length > 0) _initStripBehavior();
+
+  if (matchedCards.length === 0) {
     updateResultsLabel('No events match your search.', false);
   } else {
-    updateResultsLabel(`${visibleCount} event${visibleCount !== 1 ? 's' : ''} found`, true);
+    updateResultsLabel(`${matchedCards.length} event${matchedCards.length !== 1 ? 's' : ''} found`, true);
   }
 }
 
