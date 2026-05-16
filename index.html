@@ -1863,33 +1863,34 @@ function parseCSVRaw(text) {
 }
 
 // ── HIKE CSV → { events, details } ───────────────────────
-// Column mapping (0-based index):
-//  0=date  1=eventName  2=location  3=difficulty  4=organizer
-//  5=packagePrice  6=inclusions  7=meetupPoint  8=regLink
-//  9=maxSlots  10=schedule
+// Uses named headers — column order in the sheet does not matter.
+// Expected headers (exact match, case-sensitive):
+//   Date, Event Name, Location, Island Group, Difficulty, Organizer,
+//   Package Price, Inclusions, Meetup point, Reg Link, Max Slots, Schedule
 function parseHikeData(csv) {
-  const rows   = parseCSVRaw(csv);
+  const rows    = parseCSV(csv);   // header-keyed objects, order-independent
   const events  = {};
   const details = {};
 
-  rows.slice(1).forEach(f => {           // skip header row
-    const date      = (f[0]  || '').trim();
-    const name      = (f[1]  || '').trim();
+  rows.forEach(row => {
+    const date = (row['Date']       || '').trim();
+    const name = (row['Event Name'] || '').trim();
     if (!date || !name) return;
 
     if (!events[date]) events[date] = [];
     events[date].push(name);
 
     details[name] = {
-      location:     (f[2]  || '').trim(),
-      difficulty:   (f[3]  || '').trim(),
-      organizer:    (f[4]  || '').trim(),
-      packagePrice: (f[5]  || '').trim(),
-      inclusions:   (f[6]  || '').trim(),
-      meetupPoint:  (f[7]  || '').trim(),
-      regLink:      (f[8]  || '').trim(),
-      maxSlots:     (f[9]  || '').trim(),
-      schedule:     (f[10] || '').trim(),
+      location:     (row['Location']      || '').trim(),
+      islandGroup:  (row['Island Group']  || '').trim(),
+      difficulty:   (row['Difficulty']    || '').trim(),
+      organizer:    (row['Organizer']     || '').trim(),
+      packagePrice: (row['Package Price'] || '').trim(),
+      inclusions:   (row['Inclusions']    || '').trim(),
+      meetupPoint:  (row['Meetup point']  || '').trim(),
+      regLink:      (row['Reg Link']      || '').trim(),
+      maxSlots:     (row['Max Slots']     || '').trim(),
+      schedule:     (row['Schedule']      || '').trim(),
       _isHike: true,
     };
   });
@@ -2704,7 +2705,10 @@ function openHikeEventDetail(eventName, dk) {
   // ── 2. Date + Location ─────────────────────────────────
   html += `<div class="ed-date-loc"><div class="ed-date-line">${fullDate}</div>`;
   if (det && det.location) {
-    html += `<div class="ed-loc-line">${det.location}</div>`;
+    const islandBadge = det.islandGroup
+      ? ` <span class="ed-island-badge">${det.islandGroup}</span>`
+      : '';
+    html += `<div class="ed-loc-line">${det.location}${islandBadge}</div>`;
   }
   html += `</div>`;
 
