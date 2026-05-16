@@ -19,6 +19,28 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+/* ── COLOR TOKENS ── */
+:root {
+  --primary: #002FA7;
+  --accent:  #D0021B;
+}
+:root.hike-mode {
+  --primary: #1B4D2E;
+  --accent:  #D4720B;
+}
+
+/* ── GLOBAL TRANSITION for all themed elements ── */
+.cal-frame, .cal-frame *,
+.bottom-nav, .bottom-nav * {
+  transition:
+    color          0.3s ease,
+    background-color 0.3s ease,
+    border-color   0.3s ease,
+    outline-color  0.3s ease,
+    box-shadow     0.3s ease,
+    fill           0.3s ease;
+}
+
 body {
   background: white;
   display: flex;
@@ -39,15 +61,16 @@ body {
   width: 100%;
   max-width: 860px;
   background: white;
-  border: 5px solid #002FA7;
-  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #002FA7, 6px 6px 0 4px #000a;
+  border: 5px solid var(--primary);
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--primary), 6px 6px 0 4px #000a;
   position: relative;
+  padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
 }
 
 /* ── TOP BANNER ── */
 .top-banner {
   background: #fff;
-  border-bottom: 4px solid #002FA7;
+  border-bottom: 4px solid var(--primary);
   display: flex;
   align-items: stretch;
   position: sticky;
@@ -84,7 +107,7 @@ body {
 .banner-nav-btn {
   background: none;
   border: none;
-  color: #CC0000;
+  color: var(--accent);
   cursor: pointer;
   padding: 0 20px;
   flex-shrink: 0;
@@ -116,7 +139,7 @@ body {
 .banner-logo {
   height: 38px;
   width: auto;
-  fill: #002FA7;
+  fill: var(--primary);
   display: block;
   flex-shrink: 0;
 }
@@ -124,7 +147,7 @@ body {
   font-family: 'Archivo Black', sans-serif;
   font-size: 26px;
   letter-spacing: 2px;
-  color: #002FA7;
+  color: var(--primary);
   text-transform: uppercase;
   white-space: nowrap;
   flex-shrink: 0;
@@ -133,7 +156,7 @@ body {
 .banner-sub {
   font-size: 12px;
   letter-spacing: 1.5px;
-  color: #CC0000;
+  color: var(--accent);
   text-transform: uppercase;
   white-space: nowrap;
   overflow: hidden;
@@ -160,13 +183,13 @@ body {
   text-align: center;
   padding: 2px 16px;
   letter-spacing: 1px;
-  background: #002FA7;
+  background: var(--primary);
 }
 .month-name-box {
   font-family: 'Archivo Black', sans-serif;
   font-size: 46px;
   color: white;
-  background: #CC0000;
+  background: var(--accent);
   text-align: center;
   padding: 2px 4px;
   letter-spacing: 5px;
@@ -175,7 +198,7 @@ body {
 /* ── NAV BUTTONS ── */
 .nav-btn {
   background: white;
-  color: #002FA7;
+  color: var(--primary);
   border: none;
   font-family: 'Oswald', sans-serif;
   font-weight: 700;
@@ -185,7 +208,7 @@ body {
   cursor: pointer;
   text-transform: uppercase;
 }
-.nav-btn:hover { background: #CC0000; color: white; }
+.nav-btn:hover { background: var(--accent); color: white; }
 
 /* ── DAY HEADERS ── */
 .day-headers {
@@ -194,7 +217,7 @@ body {
   padding: 4px 2px;
   margin: 0 6px;
   gap: 2px;
-  background: #002FA7;
+  background: var(--primary);
 }
 .dh {
   text-align: center;
@@ -203,10 +226,10 @@ body {
   font-size: 20px;
   letter-spacing: 1px;
   background: white;
-  color: #002FA7;
+  color: var(--primary);
   border-radius: 5px;
 }
-.dh.sun-hdr { color: #CC0000; }
+.dh.sun-hdr { color: var(--accent); }
 
 /* ── CALENDAR GRID ── */
 .cal-grid {
@@ -215,7 +238,7 @@ body {
   padding: 4px 2px 6px;
   margin: 0 6px 6px;
   gap: 2px;
-  background: #002FA7;
+  background: var(--primary);
 }
 
 .day-cell {
@@ -239,7 +262,7 @@ body {
 
 .holiday-lbl {
   display: block;
-  color: #CC0000;
+  color: var(--accent);
   font-size: 7.5px;
   font-weight: 700;
   text-transform: uppercase;
@@ -258,15 +281,15 @@ body {
   font-family: 'Archivo Black', sans-serif;
   font-size: 52px;
   line-height: 0.95;
-  color: #002FA7;
+  color: var(--primary);
 }
-.day-cell.is-sun .date-num { color: #CC0000; }
-.day-cell.is-holiday .date-num { color: #CC0000; }
+.day-cell.is-sun .date-num { color: var(--accent); }
+.day-cell.is-holiday .date-num { color: var(--accent); }
 
 /* event pill */
 .event-pill {
   margin-top: 2px;
-  background: #CC0000;
+  background: var(--accent);
   color: white;
   font-size: 7.5px;
   font-weight: 700;
@@ -283,13 +306,13 @@ body {
   max-width: 100%;
   display: block;
 }
-.event-pill:hover { background: #002FA7; }
+.event-pill:hover { background: var(--primary); }
 
 /* +N more events badge */
 .more-badge {
   font-size: 6.5px;
   font-weight: 700;
-  color: #002FA7;
+  color: var(--primary);
   font-family: 'Oswald', sans-serif;
   letter-spacing: 0.5px;
   margin-top: 1px;
@@ -297,17 +320,17 @@ body {
 
 
 /* current date highlight — red border only, no background tint */
-.day-cell.is-today { box-shadow: inset 0 0 0 3px #CC0000; }
+.day-cell.is-today { box-shadow: inset 0 0 0 3px var(--accent); }
 
 /* ── BOTTOM SECTION ── */
 .bottom-row {
-  border-top: 3px solid #002FA7;
+  border-top: 3px solid var(--primary);
 }
 
-.mgh.s { color: #CC0000; }
+.mgh.s { color: var(--accent); }
 .mgd { color: #333; }
-.mgd.s { color: #CC0000; }
-.mgd.today { background: #002FA7; color: white; border-radius: 50%; display: inline-block; width: 14px; height: 14px; line-height: 14px; }
+.mgd.s { color: var(--accent); }
+.mgd.today { background: var(--primary); color: white; border-radius: 50%; display: inline-block; width: 14px; height: 14px; line-height: 14px; }
 
 /* center info */
 .center-info { padding: 14px 0 14px; }
@@ -318,13 +341,13 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 0 10px 10px 14px;
-  border-bottom: 1.5px solid #002FA7;
+  border-bottom: 1.5px solid var(--primary);
 }
 
 .ev-title {
   font-family: 'Archivo Black', sans-serif;
   font-size: 11px;
-  color: #CC0000;
+  color: var(--accent);
   text-transform: uppercase;
   letter-spacing: 2.5px;
   line-height: 1;
@@ -338,8 +361,8 @@ body {
 }
 .strip-nav-btn {
   background: none;
-  border: 1.5px solid #002FA7;
-  color: #002FA7;
+  border: 1.5px solid var(--primary);
+  color: var(--primary);
   width: 22px;
   height: 22px;
   border-radius: 3px;
@@ -352,8 +375,8 @@ body {
   -webkit-tap-highlight-color: transparent;
   flex-shrink: 0;
 }
-.strip-nav-btn:hover  { background: #002FA7; color: white; }
-.strip-nav-btn:active { background: #CC0000; border-color: #CC0000; color: white; }
+.strip-nav-btn:hover  { background: var(--primary); color: white; }
+.strip-nav-btn:active { background: var(--accent); border-color: var(--accent); color: white; }
 .strip-nav-btn:disabled { opacity: 0.22; cursor: default; pointer-events: none; }
 .strip-nav-btn svg { display: block; width: 12px; height: 12px; }
 
@@ -416,7 +439,7 @@ body {
 .race-card {
   flex: 0 0 auto;
   width: 158px;
-  border: 1.5px solid #002FA7;
+  border: 1.5px solid var(--primary);
   border-radius: 4px;
   padding: 10px 11px 11px;
   cursor: pointer;
@@ -434,7 +457,7 @@ body {
 .race-card:active { background: #dce6ff; }
 .race-card.is-selected {
   background: #dce6ff;
-  border-color: #CC0000;
+  border-color: var(--accent);
 }
 
 /* Date block — compact, noticeable */
@@ -442,7 +465,7 @@ body {
   font-family: 'Oswald', sans-serif;
   font-weight: 700;
   font-size: 10px;
-  color: #CC0000;
+  color: var(--accent);
   letter-spacing: 0.8px;
   text-transform: uppercase;
   line-height: 1;
@@ -453,7 +476,7 @@ body {
   font-family: 'Roboto Condensed', sans-serif;
   font-weight: 700;
   font-size: 12px;
-  color: #002FA7;
+  color: var(--primary);
   letter-spacing: 0.1px;
   line-height: 1.3;
   flex: 1;
@@ -494,7 +517,7 @@ body {
 
 /* Compatibility — keep .hol-row.is-selected for list-mode openEventDetailFromList */
 .hol-row { display: flex; gap: 10px; cursor: pointer; border-radius: 2px; padding: 6px 5px; margin: 0 -3px 1px; -webkit-tap-highlight-color: transparent; transition: background 0.1s; align-items: flex-start; }
-.hol-row.is-selected { background: #dce6ff; box-shadow: inset 3px 0 0 #002FA7; }
+.hol-row.is-selected { background: #dce6ff; box-shadow: inset 3px 0 0 var(--primary); }
 
 /* ── UPDATE BANNER ── */
 .update-banner {
@@ -502,7 +525,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 9px;
-  background: #002FA7;
+  background: var(--primary);
   color: white;
   text-decoration: none;
   padding: 12px 16px;
@@ -512,7 +535,7 @@ body {
   transition: background 0.15s;
   user-select: none;
 }
-.update-banner:hover  { background: #CC0000; }
+.update-banner:hover  { background: var(--accent); }
 .update-banner:active { opacity: 0.82; }
 .update-banner-text {
   font-family: 'Archivo Black', sans-serif;
@@ -545,7 +568,7 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   background: white;
-  border: 4px solid #002FA7;
+  border: 4px solid var(--primary);
   box-shadow: 4px 4px 0 rgba(0,0,30,0.3);
   padding: 18px 16px 16px;
   z-index: 1001;
@@ -561,21 +584,21 @@ body {
   background: none;
   border: none;
   font-size: 16px;
-  color: #002FA7;
+  color: var(--primary);
   cursor: pointer;
   font-family: 'Oswald', sans-serif;
   font-weight: 700;
   line-height: 1;
   padding: 2px 5px;
 }
-.float-close:hover { color: #CC0000; }
+.float-close:hover { color: var(--accent); }
 .fc-date {
   font-family: 'Archivo Black', sans-serif;
   font-size: 13px;
-  color: #002FA7;
+  color: var(--primary);
   text-transform: uppercase;
   letter-spacing: 1px;
-  border-bottom: 3px solid #002FA7;
+  border-bottom: 3px solid var(--primary);
   padding-bottom: 8px;
   margin-bottom: 10px;
   padding-right: 24px;
@@ -591,14 +614,14 @@ body {
 .fc-holiday {
   font-size: 10px;
   font-weight: 700;
-  color: #CC0000;
+  color: var(--accent);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   font-family: 'Oswald', sans-serif;
   margin-bottom: 2px;
 }
 .fc-event {
-  background: #CC0000;
+  background: var(--accent);
   color: white;
   font-size: 9px;
   font-weight: 700;
@@ -616,7 +639,7 @@ body {
   -webkit-tap-highlight-color: transparent;
   user-select: none;
 }
-.fc-event:hover { background: #002FA7; }
+.fc-event:hover { background: var(--primary); }
 .fc-event-chevron {
   font-size: 11px;
   opacity: 0.7;
@@ -649,7 +672,7 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   background: white;
-  border: 4px solid #002FA7;
+  border: 4px solid var(--primary);
   box-shadow: 4px 4px 0 rgba(0,0,30,0.3);
   z-index: 1002;
   width: 380px;
@@ -662,7 +685,7 @@ body {
   flex-direction: column;
 }
 .ed-header {
-  background: #002FA7;
+  background: var(--primary);
   padding: 9px 12px;
   display: flex;
   align-items: center;
@@ -714,7 +737,7 @@ body {
 .ed-event-name {
   font-family: 'Archivo Black', sans-serif;
   font-size: 18px;
-  color: #002FA7;
+  color: var(--primary);
   text-transform: uppercase;
   letter-spacing: 0.8px;
   line-height: 1.2;
@@ -764,7 +787,7 @@ body {
   margin-bottom: 14px;
 }
 .ed-dist-pill {
-  background: #CC0000;
+  background: var(--accent);
   color: white;
   font-family: 'Oswald', sans-serif;
   font-weight: 700;
@@ -777,7 +800,7 @@ body {
 .ed-reg-btn {
   display: block;
   width: 100%;
-  background: #002FA7;
+  background: var(--primary);
   color: white;
   font-family: 'Archivo Black', sans-serif;
   font-size: 10px;
@@ -792,7 +815,7 @@ body {
   border-radius: 1px;
   box-sizing: border-box;
 }
-.ed-reg-btn:hover { background: #CC0000; }
+.ed-reg-btn:hover { background: var(--accent); }
 
 /* ── RACE SCHEDULE ── */
 .ed-schedule {
@@ -803,7 +826,7 @@ body {
   font-size: 7px;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  color: #002FA7;
+  color: var(--primary);
   margin-bottom: 6px;
   line-height: 1;
 }
@@ -817,7 +840,7 @@ body {
   font-family: 'Oswald', sans-serif;
   font-weight: 700;
   font-size: 11px;
-  color: #CC0000;
+  color: var(--accent);
   letter-spacing: 0.6px;
   text-transform: uppercase;
   flex-shrink: 0;
@@ -832,7 +855,7 @@ body {
 /* ── SECTION DIVIDER ── */
 .ed-divider {
   border: none;
-  border-top: 2px solid #002FA7;
+  border-top: 2px solid var(--primary);
   margin: 16px 0;
   opacity: 0.12;
 }
@@ -866,7 +889,7 @@ body {
   font-family: 'Oswald', sans-serif;
   font-weight: 700;
   font-size: 10px;
-  color: #CC0000;
+  color: var(--accent);
   letter-spacing: 0.5px;
   min-width: 34px;
   flex-shrink: 0;
@@ -953,7 +976,7 @@ body {
 }
 .ed-cd-unit {
   background: #f4f6fb;
-  color: #002FA7;
+  color: var(--primary);
   text-align: center;
   padding: 6px 2px 4px;
   border-radius: 2px;
@@ -976,7 +999,7 @@ body {
   margin-top: 2px;
 }
 .ed-cd-done {
-  background: #CC0000;
+  background: var(--accent);
   color: white;
   font-family: 'Archivo Black', sans-serif;
   font-size: 10px;
@@ -1016,7 +1039,7 @@ body {
   left: 50%;
   transform: translateX(-50%);
   font-size: 56px;
-  color: #CC0000;
+  color: var(--accent);
   opacity: 1;
   transition: opacity 0.4s;
   pointer-events: none;
@@ -1036,16 +1059,16 @@ body {
 @media (max-width: 600px) {
   body {
     padding: 0;
-    /* Keep scrollable below-fold content above the Android nav bar / home gesture strip */
-    padding-bottom: env(safe-area-inset-bottom, 0px);
+    /* Keep scrollable below-fold content above the nav bar + Android gesture strip */
+    padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
     overflow-x: hidden;
   }
 
   /* Frame: full-width, left/right borders matching the sticky banner's 4px thickness */
   .cal-frame {
     max-width: 100%;
-    border-left: 4px solid #002FA7;
-    border-right: 4px solid #002FA7;
+    border-left: 4px solid var(--primary);
+    border-right: 4px solid var(--primary);
     box-shadow: none;
     display: flex;
     flex-direction: column;
@@ -1059,9 +1082,9 @@ body {
   .above-fold {
     display: flex;
     flex-direction: column;
-    height: calc(100vh  - 3px);    /* Fallback: browsers without dvh or env() */
-    height: calc(100dvh - 3px);    /* Fallback: dvh without env() support */
-    height: calc(100dvh - env(safe-area-inset-bottom, 0px) - 3px); /* Preferred */
+    height: calc(100vh  - 56px - 3px);    /* Fallback: browsers without dvh or env() */
+    height: calc(100dvh - 56px - 3px);    /* Fallback: dvh without env() support */
+    height: calc(100dvh - 56px - env(safe-area-inset-bottom, 0px) - 3px); /* Preferred */
     overflow: clip;  /* clips visually without creating a scroll container,
                         so position:sticky on .top-banner propagates to the
                         page scroll context (matching desktop behaviour) */
@@ -1166,7 +1189,7 @@ body {
     width: 32px;
     height: 64px;
     background: rgba(204, 0, 0, 0.13);
-    color: #CC0000;
+    color: var(--accent);
     border: none;
     font-size: 22px;
     font-weight: 900;
@@ -1184,6 +1207,106 @@ body {
 
   /* Scroll chevron visible on mobile */
   .scroll-hint { display: block; }
+
+  /* On mobile, shift scroll-hint up above the nav bar */
+  .scroll-hint { bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 10px); }
+}
+
+/* ── BOTTOM NAV BAR ── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 860px;
+  height: calc(56px + env(safe-area-inset-bottom, 0px));
+  background: #ffffff;
+  border-top: 1px solid #e0e0e0;
+  box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: flex-start;
+  z-index: 200;
+  /* Prevent content from extending under iOS home indicator */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.bottom-nav-tab {
+  flex: 1;
+  /* 56px on mobile (Material 3 standard); scales to 60px on desktop
+     to give the larger label comfortable vertical breathing room */
+  height: clamp(56px, 7vw, 60px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  position: relative;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  min-height: 44px;
+}
+
+.bottom-nav-tab:active {
+  background: rgba(0,0,0,0.04);
+}
+
+/* Vertical divider between tabs */
+.bottom-nav-divider {
+  width: 1px;
+  height: calc(clamp(56px, 7vw, 60px) * 0.6);
+  background: #e8e8e8;
+  align-self: center;
+  flex-shrink: 0;
+}
+
+/* Active indicator bar — top of tab */
+.bottom-nav-tab::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 3px;
+  border-radius: 0 0 3px 3px;
+  background: transparent;
+}
+
+.bottom-nav-tab.is-active::before {
+  background: var(--primary);
+}
+
+.bottom-nav-icon {
+  font-size: 22px;
+  line-height: 1;
+  display: block;
+  /* Inactive: grayscale + low opacity */
+  filter: grayscale(100%);
+  opacity: 0.35;
+}
+
+.bottom-nav-tab.is-active .bottom-nav-icon {
+  filter: none;
+  opacity: 1;
+}
+
+.bottom-nav-label {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  /* Responsive: 12px on mobile (2026 WCAG / Material 3 nav bar minimum)
+     scaling up to 14px on wide/desktop viewports. */
+  font-size: clamp(12px, 3vw, 14px);
+  /* Scale letter-spacing down slightly at smaller sizes to avoid cramping */
+  letter-spacing: clamp(0.6px, 0.15vw, 1.2px);
+  text-transform: uppercase;
+  line-height: 1;
+  color: #aaaaaa;
+}
+
+.bottom-nav-tab.is-active .bottom-nav-label {
+  color: var(--primary);
 }
 </style>
 </head>
@@ -1214,7 +1337,7 @@ body {
           <svg class="banner-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 692.98 184.99"><path d="M696.6,160H9.18V345h693V160ZM14.74,339.8V165.24H222V339.8Zm681.86,0H227.68V165.24H696.6Z" transform="translate(-9.18 -159.99)"/><g id="favicon"><polygon points="125.24 39.45 161.12 75.33 183.64 75.33 125.24 16.94 107.78 34.4 119.04 45.66 125.24 39.45"/><polygon points="90.5 143.24 54.61 107.35 32.09 107.35 90.5 165.75 107.95 148.29 96.7 137.03 90.5 143.24"/><polygon points="199.75 91.25 199.76 91.25 191.97 83.45 191.82 83.3 46.25 83.31 84.62 44.94 115.01 75.33 137.53 75.33 84.69 22.35 15.79 91.25 15.98 91.43 15.97 91.44 23.76 99.23 23.92 99.39 169.49 99.38 131.12 137.75 100.72 107.35 78.2 107.35 131.04 160.34 199.94 91.44 199.75 91.25"/></g><g id="MASL_txt" data-name="MASL txt"><g id="ASL"><path d="M252.14,288.44,246,326.64h5.51l1-6.93h7.37l1,6.93h6l-6.11-38.2Zm1.2,26.08,2.89-19.31,2.89,19.31Z" transform="translate(-9.18 -159.99)"/><path d="M294.8,306.29c2.68-1.26,3.88-3.77,3.88-7.7v-1.36c0-5.9-2.62-8.79-8.9-8.79h-9v38.2h9.44c6.05,0,9.11-3.17,9.11-9.06v-3.11C299.28,310.38,298.08,307.54,294.8,306.29Zm-8.07-12.39h2.89c2.13,0,3.06,1.14,3.06,3.93V300c0,3.05-1.37,4-3.6,4h-2.35Zm6.55,23.52c0,2.83-1.1,3.76-3.11,3.76h-3.44V309.45h2.67c2.78,0,3.88,1.09,3.88,4.64Z" transform="translate(-9.18 -159.99)"/><path d="M322.41,288c-5.89,0-9.11,3.43-9.11,9.6v19.86c0,6.17,3.22,9.6,9.11,9.6s9.11-3.43,9.11-9.6V297.61C331.52,291.44,328.3,288,322.41,288Zm3.11,29.84c0,2.79-1.2,3.77-3.11,3.77s-3.11-1-3.11-3.77V297.23c0-2.79,1.2-3.77,3.11-3.77s3.11,1,3.11,3.77Z" transform="translate(-9.18 -159.99)"/><polygon points="346.13 159.61 341.55 128.45 335.49 128.45 341.38 166.65 350.33 166.65 356.23 128.45 350.71 128.45 346.13 159.61" /><polygon points="369.92 166.65 386.29 166.65 386.29 161.19 375.92 161.19 375.92 150.01 384.16 150.01 384.16 144.55 375.92 144.55 375.92 133.91 386.29 133.91 386.29 128.45 369.92 128.45 369.92 166.65" /><path d="M440.59,306.18a33.23,33.23,0,0,1-2.84-2.68c-1.74-1.74-3.05-3.65-3.05-6.27,0-2.79,1.09-3.77,3-3.77s3,1,3,3.77v1.58h5.67v-1.2c0-6.17-2.94-9.6-8.84-9.6s-8.84,3.43-8.84,9.6a11.74,11.74,0,0,0,.88,4.75,18.06,18.06,0,0,0,5,6.49c1,.93,1.91,1.8,2.78,2.67,1.75,1.8,3.06,3.71,3.06,6.33,0,2.79-1.21,3.71-3.11,3.71s-3.12-.92-3.12-3.71v-2.73h-5.67v2.35c0,6.17,3.06,9.6,9,9.6s8.95-3.43,8.95-9.6a11.74,11.74,0,0,0-.88-4.75A19.26,19.26,0,0,0,440.59,306.18Z" transform="translate(-9.18 -159.99)"/><polygon points="451.6 166.65 467.96 166.65 467.96 161.19 457.6 161.19 457.6 150.01 465.84 150.01 465.84 144.55 457.6 144.55 457.6 133.91 467.96 133.91 467.96 128.45 451.6 128.45 451.6 166.65" /><path d="M496.29,288.44l-6.11,38.2h5.51l1-6.93h7.37l1,6.93h6.06l-6.11-38.2Zm1.2,26.08,2.9-19.31,2.89,19.31Z" transform="translate(-9.18 -159.99)"/><polygon points="541.07 128.45 535.07 128.45 535.07 166.65 550.95 166.65 550.95 161.19 541.07 161.19 541.07 128.45" /><polygon points="564.48 166.65 580.85 166.65 580.85 161.19 570.48 161.19 570.48 150.01 578.72 150.01 578.72 144.55 570.48 144.55 570.48 133.91 580.85 133.91 580.85 128.45 564.48 128.45 564.48 166.65" /><polygon points="604.53 159.61 599.95 128.45 593.89 128.45 599.78 166.65 608.73 166.65 614.62 128.45 609.11 128.45 604.53 159.61" /><polygon points="628.32 166.65 644.68 166.65 644.68 161.19 634.32 161.19 634.32 150.01 642.56 150.01 642.56 144.55 634.32 144.55 634.32 133.91 644.68 133.91 644.68 128.45 628.32 128.45 628.32 166.65" /><polygon points="665.31 161.19 665.31 128.45 659.31 128.45 659.31 166.65 675.18 166.65 675.18 161.19 665.31 161.19" /></g><g id="memories"><polygon points="282.13 28.82 264.52 95.69 262.15 87.09 243.36 17.17 236.23 17.19 236.22 116.6 243.65 115.69 243.66 45.52 261.55 113.64 267.48 113 270.58 100.75 285.17 44.49 285.07 111.22 292.4 110.53 292.54 17.08 285.3 17.09 282.13 28.82" /><path d="M326.71,177l-.17,91.37,2-.16,5.41-.4,4.7-.34,4.47-.32,4.7-.31,5.41-.35,1.71-.11v-7.63l-1.93.11-4.62.28-11.82.78-2.66.19.07-35.2,3.27-.12,15.4-.54,0-7.64-18.68.6.06-32.53,21-.09V177H343.11Z" transform="translate(-9.18 -159.99)"/><polygon points="399.17 87.84 377.96 16.97 370.87 16.98 370.73 105.05 378.17 104.71 378.27 42.38 396.17 104.02 402.04 103.83 419.82 42.16 419.77 103.38 427.11 103.25 427.17 16.94 419.96 16.94 399.17 87.84" /><path d="M488.92,183.24a10.92,10.92,0,0,0-1.86-3,9.26,9.26,0,0,0-2.94-2.31,9.52,9.52,0,0,0-3.63-1H470.41a9.42,9.42,0,0,0-4.14.85,7.05,7.05,0,0,0-3,2.69,12.77,12.77,0,0,0-1.47,3.34,14,14,0,0,0-.48,3.71v64.9a13.66,13.66,0,0,0,.46,3.53,13.25,13.25,0,0,0,1.36,3.26A7.26,7.26,0,0,0,466,262a10.08,10.08,0,0,0,4.18,1l10.92.07h.06a8.86,8.86,0,0,0,3.68-.95,7.57,7.57,0,0,0,2.75-2.47,11.15,11.15,0,0,0,2-6.45l0-66.56A9.26,9.26,0,0,0,488.92,183.24Zm-6.65,67a16.9,16.9,0,0,1-.21,2.86,6.38,6.38,0,0,1-.53,1.72c-.36.68-1.56.8-2.47.8l-6.05,0a7.84,7.84,0,0,1-2.6-.37,1.65,1.65,0,0,1-.89-.63,5.41,5.41,0,0,1-.62-1.71,13.65,13.65,0,0,1-.24-2.73V189.71a10.37,10.37,0,0,1,.28-2.5,5.22,5.22,0,0,1,.74-1.67c.71-1,1.3-1.14,1.75-1.14H479c.93,0,2.11.15,2.47.84A6.17,6.17,0,0,1,482,187a16.86,16.86,0,0,1,.21,2.85Z" transform="translate(-9.18 -159.99)"/><path d="M538.45,235c-.37-1.35-.74-2.61-1.11-3.75a30.23,30.23,0,0,0-1.45-3.61c-.34-.71-.71-1.43-1.12-2.15a12.69,12.69,0,0,0,2-2,23.44,23.44,0,0,0,3-5A24.9,24.9,0,0,0,541,215a34,34,0,0,0,.84-3.89c.22-1.36.39-2.85.5-4.41s.16-3.22.16-4.94-.1-3.49-.27-5.11a39.33,39.33,0,0,0-.8-4.7,40.56,40.56,0,0,0-1.21-4.13,28.64,28.64,0,0,0-1.53-3.56,21.34,21.34,0,0,0-1.83-2.93,14.36,14.36,0,0,0-2.13-2.3,7.67,7.67,0,0,0-4.93-2.11H514.54l.1,86.77,7.33.22,0-36.91,4,.08a11.56,11.56,0,0,1,1.29,1.19,12.28,12.28,0,0,1,1.78,2.79c.32.65.66,1.44,1,2.34s.71,2,1.07,3.12.74,2.52,1.12,4.05.79,3.28,1.2,5.21l4,18.69,1.41.06,4.36.19,2.4.1-6-25.45C539.19,237.8,538.81,236.31,538.45,235Zm-3.51-30.06c-.11,1.08-.22,2.2-.33,3.35s-.26,2.17-.44,3.18-.41,2-.67,2.89a12.81,12.81,0,0,1-.9,2.34,9.06,9.06,0,0,1-1.17,1.77,3.3,3.3,0,0,1-1.26.88,5,5,0,0,1-2,.29l-6.27-.1,0-35H527a6.69,6.69,0,0,1,2.2.34,4.23,4.23,0,0,1,1.52.94,9.31,9.31,0,0,1,1.38,1.71,12,12,0,0,1,1.1,2.21,22.3,22.3,0,0,1,.84,2.73,30.75,30.75,0,0,1,.58,3.06c.14,1.11.27,2.23.38,3.34,0,.3.07.61.11.92a18.69,18.69,0,0,1,.17,2.22,16.83,16.83,0,0,1-.18,1.77C535,204.11,535,204.51,534.94,204.91Z" transform="translate(-9.18 -159.99)"/><polygon points="560.71 17 560.87 106.14 568.53 106.61 568.37 17 560.71 17" /><path d="M629.37,262.8l-4.61-.4-11.81-1-2.93-.23L610,225.51l18.66.84v-7.82l-18.67-.76-.06-33,21,.12v-7.83l-28.35,0,.16,91.33,1.68.13,5.41.44,4.69.39,4.46.38,4.7.41,5.41.5,2,.18V263Z" transform="translate(-9.18 -159.99)"/><path d="M683.24,226.43a11.53,11.53,0,0,0-1.85-2.59A9.45,9.45,0,0,0,679,222a6.08,6.08,0,0,0-2.48-.82l-10.72-.59a3.7,3.7,0,0,1-2-.44h0a11,11,0,0,1-.42-3.41l0-25.4a21.17,21.17,0,0,1,.2-3.05,9.67,9.67,0,0,1,.55-2.13c.15-.36.46-1.05,2-1l7.6.06c2,0,2.31.77,2.44,1.05a8,8,0,0,1,.57,2.14,22.18,22.18,0,0,1,.22,3.38v19.07l7.33.3v-23a11.62,11.62,0,0,0-.61-3.76,12.31,12.31,0,0,0-1.81-3.43,9.64,9.64,0,0,0-2.92-2.66,8.84,8.84,0,0,0-3.71-1.13l-10.09,0H665a9.57,9.57,0,0,0-4.13,1.14,7.67,7.67,0,0,0-2.92,2.9,14,14,0,0,0-1.45,3.6,16.8,16.8,0,0,0-.47,4l0,30.71a9.76,9.76,0,0,0,.69,3.8,7.06,7.06,0,0,0,2.18,2.92,9.34,9.34,0,0,0,5.22,2.24l9.15.55c1.75.11,2.63.5,2.88.84a5.32,5.32,0,0,1,.66,3v28.58a18.57,18.57,0,0,1-.22,3.07,8,8,0,0,1-.6,2c-.23.49-.54.92-1.72.78l-7.59-.84c-2.1-.23-2.49-1.09-2.62-1.37a8.84,8.84,0,0,1-.57-2.1,24.21,24.21,0,0,1-.22-3.31V240.92l-7.32-.55,0,22.43a11.83,11.83,0,0,0,.61,3.72,13.43,13.43,0,0,0,1.79,3.46,10.87,10.87,0,0,0,2.83,2.83,9.68,9.68,0,0,0,3.62,1.47l.13,0,5,.57,5,.58H675l.63,0a8.55,8.55,0,0,0,3.57-.71,6.87,6.87,0,0,0,3-2.75,13,13,0,0,0,1.46-3.57,17.19,17.19,0,0,0,.47-4.09v-34.3A7.53,7.53,0,0,0,683.24,226.43Z" transform="translate(-9.18 -159.99)"/></g></g></svg>
           <div class="banner-text">
             <div class="banner-title">Kita-kits sa Trail!</div>
-            <div class="banner-sub">Upcoming Trail Races Sa Pinas</div>
+            <div class="banner-sub" id="bannerSub">Upcoming Trail Races Sa Pinas</div>
           </div>
         </div>
         <button class="banner-nav-btn" onclick="shift(1)" aria-label="Next month">
@@ -1251,8 +1374,8 @@ body {
     <div class="center-info" id="center-info"></div>
   </div>
 
-  <!-- UPDATE BANNER — replace href with your actual Google Form URL -->
-  <a class="update-banner"
+  <!-- UPDATE BANNER — href is updated dynamically when mode switches -->
+  <a id="update-banner" class="update-banner"
      href="https://docs.google.com/forms/d/e/1FAIpQLSfhpuMI4T_9rXTtIwcS--tUYmDQgR8WwSObjJIxQ4rooj1XRg/viewform?usp=header"
      target="_blank"
      rel="noopener noreferrer">
@@ -1287,6 +1410,17 @@ body {
 <!-- SCROLL CHEVRON — mobile only, fades on scroll -->
 <div class="scroll-hint" id="scroll-hint">&#8964;</div>
 
+<!-- BOTTOM NAV BAR -->
+<nav class="bottom-nav" aria-label="Main navigation">
+  <button class="bottom-nav-tab is-active" id="tabRuns" onclick="switchMode('runs')" aria-label="Trail Runs" aria-selected="true">
+    <span class="bottom-nav-label">Trail Runs</span>
+  </button>
+  <div class="bottom-nav-divider" role="separator"></div>
+  <button class="bottom-nav-tab" id="tabHikes" onclick="switchMode('hikes')" aria-label="Hikes" aria-selected="false">
+    <span class="bottom-nav-label">Hikes</span>
+  </button>
+</nav>
+
 
 <script>
 // ── DATA ──────────────────────────────────────────────────
@@ -1313,8 +1447,21 @@ const PH_HOLIDAYS = {
 };
 
 // ── GOOGLE SHEET CSV URLS ─────────────────────────────────
-const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRgLX2R0c_LekofFvWcGKaoJvs6kdJQquTQ43-ZvWG6WoazU1ZBnF9SBPbVvDHc1dKD72xVDDkwfdhw/pub?gid=1550638156&single=true&output=csv';
+const RACE_CSV_URL  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRgLX2R0c_LekofFvWcGKaoJvs6kdJQquTQ43-ZvWG6WoazU1ZBnF9SBPbVvDHc1dKD72xVDDkwfdhw/pub?gid=1550638156&single=true&output=csv';
+const HIKE_CSV_URL  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRgLX2R0c_LekofFvWcGKaoJvs6kdJQquTQ43-ZvWG6WoazU1ZBnF9SBPbVvDHc1dKD72xVDDkwfdhw/pub?gid=1290848239&single=true&output=csv';
+const RACE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfhpuMI4T_9rXTtIwcS--tUYmDQgR8WwSObjJIxQ4rooj1XRg/viewform?usp=header';
+const HIKE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfS2x-PgVGihQsUaPwyQwnudNzVbx3Vbma5YRQjMNpH2b4dlA/viewform?usp=dialog';
 
+// ── SESSION CACHE ─────────────────────────────────────────
+// Each is null until first fetched; re-used on subsequent tab switches.
+let raceData = null;   // { events, details }
+let hikeData = null;   // { events, details }
+
+// ── ACTIVE MODE ───────────────────────────────────────────
+let currentMode = 'runs';
+
+// These globals always reflect the ACTIVE mode's data.
+// Swapped by switchMode() — all rendering functions read from here.
 // These are populated by fetchSheetData() before first render
 let TRAIL_EVENTS  = {};
 let EVENT_DETAILS = {};
@@ -1340,10 +1487,61 @@ function parseCSV(text) {
   }).filter(row => Object.values(row).some(v => v !== ''));
 }
 
+// ── RAW CSV PARSER (column-index based, for hike CSV) ─────
+function parseCSVRaw(text) {
+  return text.trim().split('\n').map(line => {
+    const fields = [];
+    let cur = '', inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (c === '"') { inQ = !inQ; }
+      else if (c === ',' && !inQ) { fields.push(cur.trim()); cur = ''; }
+      else { cur += c; }
+    }
+    fields.push(cur.trim());
+    return fields.map(f => f.replace(/^"|"$/g, '').trim());
+  });
+}
+
+// ── HIKE CSV → { events, details } ───────────────────────
+// Column mapping (0-based index):
+//  0=date  1=eventName  2=location  3=difficulty  4=organizer
+//  5=packagePrice  6=inclusions  7=meetupPoint  8=regLink
+//  9=maxSlots  10=schedule
+function parseHikeData(csv) {
+  const rows   = parseCSVRaw(csv);
+  const events  = {};
+  const details = {};
+
+  rows.slice(1).forEach(f => {           // skip header row
+    const date      = (f[0]  || '').trim();
+    const name      = (f[1]  || '').trim();
+    if (!date || !name) return;
+
+    if (!events[date]) events[date] = [];
+    events[date].push(name);
+
+    details[name] = {
+      location:     (f[2]  || '').trim(),
+      difficulty:   (f[3]  || '').trim(),
+      organizer:    (f[4]  || '').trim(),
+      packagePrice: (f[5]  || '').trim(),
+      inclusions:   (f[6]  || '').trim(),
+      meetupPoint:  (f[7]  || '').trim(),
+      regLink:      (f[8]  || '').trim(),
+      maxSlots:     (f[9]  || '').trim(),
+      schedule:     (f[10] || '').trim(),
+      _isHike: true,
+    };
+  });
+
+  return { events, details };
+}
+
 // ── FETCH & BUILD DATA ────────────────────────────────────
 async function fetchSheetData() {
   try {
-    const res = await fetch(SHEET_URL);
+    const res = await fetch(RACE_CSV_URL);
     const csv = await res.text();
     const rows = parseCSV(csv);
 
@@ -1414,6 +1612,9 @@ async function fetchSheetData() {
   } catch (err) {
     console.error('Failed to load race data from Google Sheets:', err);
   }
+
+  // Cache the loaded race data for tab switching
+  raceData = { events: TRAIL_EVENTS, details: EVENT_DETAILS };
 
   // Render calendar after data is loaded (or on failure, render empty)
   render();
@@ -1537,9 +1738,15 @@ function renderCenter(y, m, today) {
 
   const hasEvents = allCards.length > 0;
 
+  const stripTitle = currentMode === 'hikes' ? 'HIKES THIS MONTH' : 'TRAIL RACES THIS MONTH';
+  const hikeLoadFailed = currentMode === 'hikes' && hikeData && hikeData._loadError;
+  const emptyMsg   = hikeLoadFailed
+    ? 'Could not load hike events. Please check your connection and try again.'
+    : currentMode === 'hikes' ? 'No hikes this month.' : 'No trail events this month.';
+
   let h = `
     <div class="ev-header">
-      <div class="ev-title">TRAIL RACES THIS MONTH</div>
+      <div class="ev-title">${stripTitle}</div>
       ${hasEvents ? `
       <div class="strip-nav" id="strip-nav">
         <button class="strip-nav-btn" id="strip-prev" onclick="stripNav(-1)" aria-label="Previous races" disabled>
@@ -1558,9 +1765,17 @@ function renderCenter(y, m, today) {
     allCards.forEach(({ k, name, dateLabel }) => {
       const det      = EVENT_DETAILS[name];
       const safeName = name.replace(/'/g, "\'").replace(/"/g, '&quot;');
-      const parts = det ? det.location.split(',') : []; const locShort = parts.length >= 2 ? parts[1].trim() : (parts[0] ? parts[0].trim() : '');
-      const distStr  = det && det.distances ? det.distances.join(' / ') : '';
-      const metaStr  = [locShort, distStr].filter(Boolean).join(' • ');
+      let metaStr;
+      if (currentMode === 'hikes') {
+        const loc  = det ? det.location  : '';
+        const diff = det ? det.difficulty : '';
+        metaStr = [loc, diff].filter(Boolean).join(' · ');
+      } else {
+        const parts   = det ? det.location.split(',') : [];
+        const locShort = parts.length >= 2 ? parts[1].trim() : (parts[0] ? parts[0].trim() : '');
+        const distStr  = det && det.distances ? det.distances.join(' / ') : '';
+        metaStr = [locShort, distStr].filter(Boolean).join(' • ');
+      }
 
       h += `<div class="race-card" onclick="openEventDetailFromList('${safeName}','${k}',this)">
               <div class="rc-date">${dateLabel}</div>
@@ -1573,7 +1788,7 @@ function renderCenter(y, m, today) {
     h += `    </div>
           </div>`;
   } else {
-    h += `<div class="race-strip-empty">No trail events this month.</div>`;
+    h += `<div class="race-strip-empty">${emptyMsg}</div>`;
   }
 
   el.innerHTML = h;
@@ -1706,13 +1921,14 @@ function openCard(dk, d, m, y) {
 
   // Holiday
   if (PH_HOLIDAYS[dk]) {
-    content += `<div class="fc-section-lbl" style="color:#CC0000">Legal Holiday</div>`;
+    content += `<div class="fc-section-lbl" style="color:var(--accent)">Legal Holiday</div>`;
     content += `<div class="fc-holiday">${PH_HOLIDAYS[dk][0]}</div>`;
   }
 
   // All events
   if (evArr.length) {
-    content += `<div class="fc-section-lbl" style="color:#002FA7;margin-top:${PH_HOLIDAYS[dk] ? 10 : 0}px">Trail Events</div>`;
+    const evSectionLbl = currentMode === 'hikes' ? 'Hike Events' : 'Trail Events';
+    content += `<div class="fc-section-lbl" style="color:var(--primary);margin-top:${PH_HOLIDAYS[dk] ? 10 : 0}px">${evSectionLbl}</div>`;
     content += `<div class="fc-section-hint">Tap an event for details</div>`;
     evArr.forEach(ev => {
       const safeName = ev.replace(/'/g, "\\'").replace(/"/g, '&quot;');
@@ -1763,6 +1979,12 @@ function handleOverlayClick() {
 
 // ── EVENT DETAIL MODAL (Layer 2) ─────────────────────────
 function openEventDetail(eventName, dk) {
+  // Delegate to hike-specific modal when in hike mode
+  if (currentMode === 'hikes') {
+    openHikeEventDetail(eventName, dk);
+    return;
+  }
+
   const det      = EVENT_DETAILS[eventName];
   const modal    = document.getElementById('ed-modal');
   const bodyEl   = document.getElementById('ed-body');
@@ -1847,7 +2069,8 @@ function openEventDetail(eventName, dk) {
   }));
 }
 
-function _startCountdown(dk) {
+function _startCountdown(dk, dayLabel) {
+  dayLabel = dayLabel || 'Race Day!';
   const cdEl = document.getElementById('ed-countdown');
   if (!cdEl || !dk) return;
   const [cy, cm, cd] = dk.split('-').map(Number);
@@ -1866,7 +2089,7 @@ function _startCountdown(dk) {
   function tickCountdown() {
     const diff = target - Date.now();
     if (diff <= 0) {
-      cdEl.innerHTML = '<div class="ed-cd-done">&#127937; Race Day!</div>';
+      cdEl.innerHTML = `<div class="ed-cd-done">&#127937; ${dayLabel}</div>`;
       _clearCountdown();
       return;
     }
@@ -1876,7 +2099,7 @@ function _startCountdown(dk) {
     const mins  = Math.floor((totalSec % 3600)  / 60);
     const secs  = totalSec % 60;
     cdEl.innerHTML =
-      `<div class="ed-countdown-lbl">Countdown to Race Day</div>
+      `<div class="ed-countdown-lbl">Countdown to ${dayLabel}</div>
        <div class="ed-cd-grid">
          <div class="ed-cd-unit"><span class="ed-cd-num">${days}</span><span class="ed-cd-lbl">Days</span></div>
          <div class="ed-cd-unit"><span class="ed-cd-num">${pad2(hours)}</span><span class="ed-cd-lbl">Hours</span></div>
@@ -1886,6 +2109,111 @@ function _startCountdown(dk) {
   }
   tickCountdown();
   _countdownTimer = setInterval(tickCountdown, 1000);
+}
+
+// ── HIKE EVENT DETAIL MODAL ───────────────────────────────
+function openHikeEventDetail(eventName, dk) {
+  const det    = EVENT_DETAILS[eventName];
+  const modal  = document.getElementById('ed-modal');
+  const bodyEl = document.getElementById('ed-body');
+
+  // Build full date string from dk
+  let fullDate = '';
+  if (dk) {
+    const [cy, cm, cd] = dk.split('-').map(Number);
+    const dow       = new Date(cy, cm - 1, cd).getDay();
+    const monthName = ['January','February','March','April','May','June',
+                       'July','August','September','October','November','December'][cm - 1];
+    fullDate = `${DAY_NAMES_FULL[dow]}, ${monthName} ${cd}, ${cy}`;
+  }
+
+  // ── 1. Event name ──────────────────────────────────────
+  let html = `<div class="ed-event-name">${eventName}</div>`;
+
+  // ── 2. Date + Location ─────────────────────────────────
+  html += `<div class="ed-date-loc"><div class="ed-date-line">${fullDate}</div>`;
+  if (det && det.location) {
+    html += `<div class="ed-loc-line">${det.location}</div>`;
+  }
+  html += `</div>`;
+
+  // ── 3. Difficulty badge ────────────────────────────────
+  if (det && det.difficulty) {
+    html += `<div class="ed-distances"><span class="ed-dist-pill">${det.difficulty}</span></div>`;
+  }
+
+  // ── 4. Package Price ───────────────────────────────────
+  if (det) {
+    const priceDisplay = det.packagePrice ? `₱${det.packagePrice}` : 'Free';
+    html += `<div class="ed-support" style="margin-bottom:12px">
+      <div class="ed-support-row">
+        <span class="ed-support-lbl">Package</span>
+        <span class="ed-support-val" style="font-weight:700;color:#222">${priceDisplay}</span>
+      </div>`;
+
+    // ── 5. Inclusions ──────────────────────────────────
+    if (det.inclusions) {
+      html += `<div class="ed-support-row">
+        <span class="ed-support-lbl">Inclusions</span>
+        <span class="ed-support-val">${det.inclusions}</span>
+      </div>`;
+    }
+
+    // ── 6. Meetup Point ────────────────────────────────
+    if (det.meetupPoint) {
+      html += `<div class="ed-support-row">
+        <span class="ed-support-lbl">Meet Up Point</span>
+        <span class="ed-support-val">${det.meetupPoint}</span>
+      </div>`;
+    }
+
+    // ── Max Slots ──────────────────────────────────────
+    if (det.maxSlots) {
+      html += `<div class="ed-support-row">
+        <span class="ed-support-lbl">Max Slots</span>
+        <span class="ed-support-val">${det.maxSlots}</span>
+      </div>`;
+    }
+
+    // ── Hike Schedule ──────────────────────────────────
+    if (det.schedule) {
+      html += `<div class="ed-support-row">
+        <span class="ed-support-lbl">Schedule</span>
+        <span class="ed-support-val">${det.schedule}</span>
+      </div>`;
+    }
+
+    html += `</div>`;
+  }
+
+  // ── 7. Register button ─────────────────────────────────
+  if (det && det.regLink) {
+    html += `<a class="ed-reg-btn" href="${det.regLink}" target="_blank" rel="noopener noreferrer">Register Now &rsaquo;</a>`;
+  }
+
+  // ── 8. Organizer (below divider) ───────────────────────
+  if (det && det.organizer) {
+    html += `<hr class="ed-divider">
+      <div class="ed-support">
+        <div class="ed-support-row">
+          <span class="ed-support-lbl">Organizer</span>
+          <span class="ed-support-val">${det.organizer}</span>
+        </div>
+      </div>`;
+  }
+
+  // ── 9. Countdown ───────────────────────────────────────
+  html += `<div class="ed-countdown" id="ed-countdown"></div>`;
+
+  bodyEl.innerHTML = html;
+
+  _clearCountdown();
+  _startCountdown(dk, 'Hike Day!');
+
+  modal.style.display = 'flex';
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    modal.style.opacity = '1';
+  }));
 }
 
 // Tracks whether the detail modal was opened directly from the bottom list
@@ -2038,6 +2366,79 @@ if (scrollHint) {
     if (e.key === 'ArrowRight') { e.preventDefault(); shift( 1); }
   });
 })();
+
+// ── MODE SWITCHING (Trail Runs ↔ Hikes) ───────────────────
+async function switchMode(mode) {
+  // No-op if already on this mode (prevents re-fetch flicker)
+  if (mode === currentMode) return;
+
+  const html     = document.documentElement;
+  const tabRuns  = document.getElementById('tabRuns');
+  const tabHikes = document.getElementById('tabHikes');
+  const banner   = document.getElementById('update-banner');
+  const grid     = document.getElementById('cal-grid');
+
+  // ── Color identity ──────────────────────────────────────
+  if (mode === 'hikes') {
+    html.classList.add('hike-mode');
+  } else {
+    html.classList.remove('hike-mode');
+  }
+
+  // ── Tab UI ──────────────────────────────────────────────
+  tabRuns.classList.toggle('is-active',  mode === 'runs');
+  tabHikes.classList.toggle('is-active', mode === 'hikes');
+  tabRuns.setAttribute('aria-selected',  mode === 'runs'  ? 'true' : 'false');
+  tabHikes.setAttribute('aria-selected', mode === 'hikes' ? 'true' : 'false');
+
+  // ── Banner subtitle ─────────────────────────────────────
+  document.getElementById('bannerSub').textContent = mode === 'hikes'
+    ? 'Upcoming Hikes & Treks Sa Pinas'
+    : 'Upcoming Trail Races Sa Pinas';
+
+  // ── Update-banner link ──────────────────────────────────
+  if (banner) banner.href = mode === 'hikes' ? HIKE_FORM_URL : RACE_FORM_URL;
+
+  currentMode = mode;
+
+  // ── Update strip title immediately (before fetch/render) ─
+  const evTitleEl = document.querySelector('.ev-title');
+  if (evTitleEl) evTitleEl.textContent = mode === 'hikes' ? 'HIKES THIS MONTH' : 'TRAIL RACES THIS MONTH';
+
+  // ── Fetch (if not yet cached) & swap globals ────────────
+  if (mode === 'hikes') {
+    if (!hikeData) {
+      // Dim grid as loading indicator
+      grid.style.opacity = '0.4';
+      grid.style.pointerEvents = 'none';
+      try {
+        const res = await fetch(HIKE_CSV_URL);
+        const csv = await res.text();
+        hikeData  = parseHikeData(csv);
+      } catch (err) {
+        console.error('Failed to load hike data:', err);
+        grid.style.opacity     = '1';
+        grid.style.pointerEvents = '';
+        // Reset to empty data so render() still draws the full calendar
+        // (date numbers remain visible; the event strip will show the error)
+        hikeData = { events: {}, details: {}, _loadError: true };
+      }
+    }
+    TRAIL_EVENTS  = hikeData.events;
+    EVENT_DETAILS = hikeData.details;
+  } else {
+    // Restore race data (always available — loaded on page start)
+    if (raceData) {
+      TRAIL_EVENTS  = raceData.events;
+      EVENT_DETAILS = raceData.details;
+    }
+  }
+
+  // ── Restore grid opacity & re-render ───────────────────
+  grid.style.opacity      = '';
+  grid.style.pointerEvents = '';
+  render();
+}
 </script>
 </body>
 </html>
