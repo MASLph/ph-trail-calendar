@@ -182,16 +182,51 @@ body {
   padding: 2px 16px;
   letter-spacing: 1px;
   background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .month-name-box {
   font-family: 'Archivo Black', sans-serif;
   font-size: 46px;
-  color: white;
-  background: var(--accent);
-  text-align: center;
-  padding: 2px 4px;
+  background: transparent;
   letter-spacing: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
 }
+.month-name-text {
+  background: var(--accent);
+  color: white;
+  padding: 2px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  width: 100%;
+}
+.today-btn {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 46px;
+  color: white;
+  background: var(--primary);
+  border: none;
+  padding: 2px 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.today-btn:hover  { background: var(--accent); }
+.today-btn:active { opacity: 0.8; }
+/* Hidden when already on current month */
+.today-btn.is-current-month { opacity: 0.32; pointer-events: none; }
 
 /* ── NAV BUTTONS ── */
 .nav-btn {
@@ -512,6 +547,130 @@ body {
   font-family: 'Roboto Condensed', sans-serif;
   font-style: italic;
 }
+
+/* ── SEARCH / FILTER BAR ── */
+.sf-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px 0;
+  gap: 8px;
+}
+.sf-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1.5px solid var(--primary);
+  color: var(--primary);
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 7px 12px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background 0.12s, color 0.12s;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 44px;
+}
+.sf-toggle-btn:hover  { background: var(--primary); color: white; }
+.sf-toggle-btn.is-open { background: var(--primary); color: white; }
+.sf-clear-btn {
+  background: none;
+  border: 1.5px solid var(--accent);
+  color: var(--accent);
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  padding: 7px 11px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background 0.12s, color 0.12s;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 44px;
+}
+.sf-clear-btn:hover { background: var(--accent); color: white; }
+
+/* ── SEARCH / FILTER PANEL ── */
+.sf-panel {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px 14px;
+  border-top: 1.5px solid var(--primary);
+  margin-top: 8px;
+}
+.sf-panel.is-open { display: flex; }
+
+.sf-search-row { display: flex; gap: 8px; align-items: center; }
+.sf-input {
+  flex: 1;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--primary);
+  background: white;
+  border: 2px solid var(--primary);
+  padding: 9px 12px;
+  border-radius: 2px;
+  outline: none;
+  -webkit-appearance: none;
+  min-height: 44px;
+}
+.sf-input::placeholder { color: #aaa; font-weight: 400; letter-spacing: 0.5px; }
+.sf-input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(208, 2, 27, 0.12); }
+
+.sf-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.sf-chips-lbl {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: #aaa;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  margin-right: 2px;
+}
+.sf-chip {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 5px 11px;
+  border: 1.5px solid var(--primary);
+  background: white;
+  color: var(--primary);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background 0.1s, color 0.1s;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 36px;
+  white-space: nowrap;
+}
+.sf-chip:hover  { background: #e8eeff; }
+.sf-chip.is-active { background: var(--primary); color: white; }
+
+.sf-results-label {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 11px;
+  color: #888;
+  font-style: italic;
+  letter-spacing: 0.3px;
+  min-height: 14px;
+}
+.sf-results-label.has-results { color: var(--accent); font-style: normal; font-weight: 700; }
+.sf-results-label.no-results  { color: #999; }
 
 /* Compatibility — keep .hol-row.is-selected for list-mode openEventDetailFromList */
 .hol-row { display: flex; gap: 10px; cursor: pointer; border-radius: 2px; padding: 6px 5px; margin: 0 -3px 1px; -webkit-tap-highlight-color: transparent; transition: background 0.1s; align-items: flex-start; }
@@ -1050,6 +1209,47 @@ body {
   50%       { transform: translateX(-50%) translateY(7px); }
 }
 
+/* ── LOADING OVERLAY ── */
+.cal-loading-overlay {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.82);
+  z-index: 50;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+.cal-loading-overlay.is-visible {
+  display: flex;
+}
+.cal-loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(0, 47, 167, 0.15);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: cal-spin 0.7s linear infinite;
+}
+.cal-loading-label {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--primary);
+  opacity: 0.7;
+}
+@keyframes cal-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (min-width: 601px) {
+  .cal-frame { position: relative; }
+}
+
 /* ═══════════════════════════════
    MOBILE  (≤ 600px)
    ═══════════════════════════════ */
@@ -1079,6 +1279,7 @@ body {
   .above-fold {
     display: flex;
     flex-direction: column;
+    position: relative;
     height: calc(100vh  - 56px - 3px);    /* Fallback: browsers without dvh or env() */
     height: calc(100dvh - 56px - 3px);    /* Fallback: dvh without env() support */
     height: calc(100dvh - 56px - env(safe-area-inset-bottom, 0px) - 3px); /* Preferred */
@@ -1105,6 +1306,8 @@ body {
   .month-header { padding: 3px 4px; gap: 3px; flex-shrink: 0; }
   .year-box { font-size: 22px; padding: 1px 8px; }
   .month-name-box { font-size: 22px; letter-spacing: 2px; }
+  .month-name-text { padding: 1px 8px; }
+  .today-btn { font-size: 22px; padding: 1px 8px; letter-spacing: 1px; }
 
   /* Day headers — tightened */
   .day-headers { margin: 0 4px; padding: 2px; gap: 2px; flex-shrink: 0; }
@@ -1207,6 +1410,13 @@ body {
 
   /* On mobile, shift scroll-hint up above the nav bar */
   .scroll-hint { bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 10px); }
+
+  /* Search / Filter — mobile */
+  .sf-bar { padding: 6px 12px 0; }
+  .sf-toggle-btn { font-size: 10px; letter-spacing: 1px; padding: 6px 10px; }
+  .sf-panel { padding: 10px 12px 12px; gap: 8px; }
+  .sf-input { font-size: 11px; padding: 8px 10px; }
+  .sf-chip { font-size: 9px; padding: 4px 9px; }
 }
 
 /* ── BOTTOM NAV BAR ── */
@@ -1346,8 +1556,8 @@ body {
     <!-- MONTH HEADER -->
     <div class="month-header">
       <div class="year-box" id="yr-l">2026</div>
-      <div class="month-name-box" id="mon-name">MAY</div>
-      <div class="year-box" id="yr-r">2026</div>
+      <div class="month-name-box"><span class="month-name-text" id="mon-name">MAY</span></div>
+      <button class="today-btn" id="today-btn" onclick="jumpToToday()" aria-label="Go to current month">TODAY</button>
     </div>
 
     <!-- DAY HEADERS -->
@@ -1364,10 +1574,54 @@ body {
     <!-- GRID -->
     <div class="cal-grid" id="cal-grid"></div>
 
+    <!-- LOADING OVERLAY — shown while hike data fetches -->
+    <div class="cal-loading-overlay" id="cal-loading-overlay">
+      <div class="cal-loading-spinner"></div>
+      <div class="cal-loading-label">Loading…</div>
+    </div>
+
   </div><!-- /.above-fold -->
 
   <!-- BOTTOM SECTION — below the fold on mobile, scroll to reveal -->
   <div class="bottom-row">
+    <!-- ── SEARCH / FILTER PANEL ── -->
+    <div class="sf-bar">
+      <button class="sf-toggle-btn" id="sf-toggle-btn" onclick="toggleSearchPanel()" aria-expanded="false" aria-controls="sf-panel">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span>SEARCH &amp; FILTER</span>
+      </button>
+      <button class="sf-clear-btn" id="sf-clear-btn" onclick="clearSearch()" style="display:none" aria-label="Clear search and filters">CLEAR ✕</button>
+    </div>
+
+    <div class="sf-panel" id="sf-panel" aria-hidden="true">
+      <!-- Search input -->
+      <div class="sf-search-row">
+        <input
+          class="sf-input"
+          id="sf-input"
+          type="search"
+          placeholder="RACE NAME OR LOCATION…"
+          autocomplete="off"
+          autocorrect="off"
+          spellcheck="false"
+          aria-label="Search races by name or location"
+          oninput="applySearch()"
+        />
+      </div>
+
+      <!-- Filter chips -->
+      <div class="sf-chips-row" id="sf-chips-row">
+        <span class="sf-chips-lbl">ISLAND:</span>
+        <button class="sf-chip is-active" data-filter="island" data-value="all"      onclick="setFilter('island','all',      this)">ALL</button>
+        <button class="sf-chip"           data-filter="island" data-value="Luzon"    onclick="setFilter('island','Luzon',    this)">LUZON</button>
+        <button class="sf-chip"           data-filter="island" data-value="Visayas"  onclick="setFilter('island','Visayas',  this)">VISAYAS</button>
+        <button class="sf-chip"           data-filter="island" data-value="Mindanao" onclick="setFilter('island','Mindanao', this)">MINDANAO</button>
+      </div>
+
+      <!-- Results count -->
+      <div class="sf-results-label" id="sf-results-label" aria-live="polite" aria-atomic="true"></div>
+    </div>
+
     <div class="center-info" id="center-info"></div>
   </div>
 
@@ -1632,11 +1886,114 @@ function stripEmoji(str) {
   return str.replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, '').trim();
 }
 
+// ── SEARCH & FILTER STATE ────────────────────────────────
+const sfState = {
+  query:  '',
+  island: 'all',
+  status: 'all',
+};
+
+function toggleSearchPanel() {
+  const panel  = document.getElementById('sf-panel');
+  const btn    = document.getElementById('sf-toggle-btn');
+  const isOpen = panel.classList.contains('is-open');
+  panel.classList.toggle('is-open', !isOpen);
+  panel.setAttribute('aria-hidden', isOpen ? 'true' : 'false');
+  btn.classList.toggle('is-open', !isOpen);
+  btn.setAttribute('aria-expanded', (!isOpen).toString());
+  if (!isOpen) {
+    const input = document.getElementById('sf-input');
+    if (input) setTimeout(() => input.focus(), 50);
+  }
+}
+
+function setFilter(key, value, chipEl) {
+  sfState[key] = value;
+  document.querySelectorAll(`.sf-chip[data-filter="${key}"]`)
+    .forEach(c => c.classList.toggle('is-active', c === chipEl));
+  applySearch();
+}
+
+function applySearch() {
+  sfState.query = (document.getElementById('sf-input')?.value || '').trim().toLowerCase();
+  const hasFilters = sfState.query || sfState.island !== 'all' || sfState.status !== 'all';
+  const clearBtn = document.getElementById('sf-clear-btn');
+  if (clearBtn) clearBtn.style.display = hasFilters ? '' : 'none';
+  renderFilteredStrip();
+}
+
+function clearSearch() {
+  sfState.query  = '';
+  sfState.island = 'all';
+  sfState.status = 'all';
+  const input = document.getElementById('sf-input');
+  if (input) input.value = '';
+  document.querySelectorAll('.sf-chip').forEach(c => {
+    c.classList.toggle('is-active', c.dataset.value === 'all');
+  });
+  document.getElementById('sf-clear-btn').style.display = 'none';
+  document.getElementById('sf-results-label').textContent = '';
+  renderFilteredStrip();
+}
+
+function renderFilteredStrip() {
+  render();
+
+  const { query, island, status } = sfState;
+  const hasFilters = query || island !== 'all' || status !== 'all';
+
+  if (!hasFilters) {
+    updateResultsLabel('');
+    return;
+  }
+
+  const cards = document.querySelectorAll('.race-card');
+  let visibleCount = 0;
+
+  cards.forEach(card => {
+    const name       = (card.querySelector('.rc-name')?.textContent || '').toLowerCase();
+    const meta       = (card.querySelector('.rc-meta')?.textContent || '').toLowerCase();
+    const cardIsland = card.dataset.island || '';
+    const cardStatus = card.dataset.status || '';
+
+    const matchesQuery  = !query  || name.includes(query) || meta.includes(query);
+    const matchesIsland = island === 'all' || cardIsland.toLowerCase().includes(island.toLowerCase());
+    const matchesStatus = status === 'all' || cardStatus.toLowerCase() === status.toLowerCase();
+
+    const visible = matchesQuery && matchesIsland && matchesStatus;
+    card.style.display = visible ? '' : 'none';
+    if (visible) visibleCount++;
+  });
+
+  document.querySelectorAll('.hol-row').forEach(row => {
+    const text      = (row.textContent || '').toLowerCase();
+    const rowIsland = row.dataset.island || '';
+    const rowStatus = row.dataset.status || '';
+    const matchesQuery  = !query  || text.includes(query);
+    const matchesIsland = island === 'all' || rowIsland.toLowerCase().includes(island.toLowerCase());
+    const matchesStatus = status === 'all' || rowStatus.toLowerCase() === status.toLowerCase();
+    row.style.display = (matchesQuery && matchesIsland && matchesStatus) ? '' : 'none';
+  });
+
+  if (visibleCount === 0) {
+    updateResultsLabel('No events match your search.', false);
+  } else {
+    updateResultsLabel(`${visibleCount} event${visibleCount !== 1 ? 's' : ''} found`, true);
+  }
+}
+
+function updateResultsLabel(text, hasResults = false) {
+  const label = document.getElementById('sf-results-label');
+  if (!label) return;
+  label.textContent = text;
+  label.classList.toggle('has-results', hasResults);
+  label.classList.toggle('no-results', !hasResults && text.length > 0);
+}
+
 // ── RENDER ──────────────────────────────────────────────────
 function render() {
   const y = cur.getFullYear(), m = cur.getMonth();
   document.getElementById('yr-l').textContent    = y;
-  document.getElementById('yr-r').textContent    = y;
   document.getElementById('mon-name').textContent = MONTHS[m];
 
   const firstDow    = new Date(y, m, 1).getDay();
@@ -1712,6 +2069,7 @@ function render() {
 
   renderCenter(y, m, today);
   updateStickyOffset();
+  updateTodayBtn();
 }
 
 function renderCenter(y, m, today) {
@@ -1774,7 +2132,10 @@ function renderCenter(y, m, today) {
         metaStr = [locShort, distStr].filter(Boolean).join(' • ');
       }
 
-      h += `<div class="race-card" onclick="openEventDetailFromList('${safeName}','${k}',this)">
+      const cardIsland = det ? (det.islandGroup || '') : '';
+      const cardStatus = det ? (det.regStatus   || '') : '';
+
+      h += `<div class="race-card" data-island="${cardIsland}" data-status="${cardStatus}" onclick="openEventDetailFromList('${safeName}','${k}',this)">
               <div class="rc-date">${dateLabel}</div>
               <div class="rc-div"></div>
               <div class="rc-name">${name}</div>
@@ -1876,6 +2237,20 @@ function stripNav(dir) {
 function shift(dir) {
   cur.setMonth(cur.getMonth() + dir);
   render();
+}
+
+function jumpToToday() {
+  const now = new Date();
+  cur = new Date(now.getFullYear(), now.getMonth(), 1);
+  render();
+}
+
+function updateTodayBtn() {
+  const btn = document.getElementById('today-btn');
+  if (!btn) return;
+  const now = new Date();
+  const isCurrentMonth = (cur.getFullYear() === now.getFullYear() && cur.getMonth() === now.getMonth());
+  btn.classList.toggle('is-current-month', isCurrentMonth);
 }
 
 // ── STICKY MONTH-HEADER OFFSET ────────────────────────────
@@ -2405,8 +2780,9 @@ async function switchMode(mode) {
   // ── Fetch (if not yet cached) & swap globals ────────────
   if (mode === 'hikes') {
     if (!hikeData) {
-      // Dim grid as loading indicator
-      grid.style.opacity = '0.4';
+      // Show loading overlay instead of dimming the grid
+      const loadingOverlay = document.getElementById('cal-loading-overlay');
+      if (loadingOverlay) loadingOverlay.classList.add('is-visible');
       grid.style.pointerEvents = 'none';
       try {
         const res = await fetch(HIKE_CSV_URL);
@@ -2414,12 +2790,14 @@ async function switchMode(mode) {
         hikeData  = parseHikeData(csv);
       } catch (err) {
         console.error('Failed to load hike data:', err);
-        grid.style.opacity     = '1';
+        if (loadingOverlay) loadingOverlay.classList.remove('is-visible');
         grid.style.pointerEvents = '';
         // Reset to empty data so render() still draws the full calendar
         // (date numbers remain visible; the event strip will show the error)
         hikeData = { events: {}, details: {}, _loadError: true };
       }
+      if (loadingOverlay) loadingOverlay.classList.remove('is-visible');
+      grid.style.pointerEvents = '';
     }
     TRAIL_EVENTS  = hikeData.events;
     EVENT_DETAILS = hikeData.details;
@@ -2431,9 +2809,7 @@ async function switchMode(mode) {
     }
   }
 
-  // ── Restore grid opacity & re-render ───────────────────
-  grid.style.opacity      = '';
-  grid.style.pointerEvents = '';
+  // ── Re-render ───────────────────────────────────────────
   render();
 }
 </script>
